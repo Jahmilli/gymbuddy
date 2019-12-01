@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { StyleSheet, Text, View, Button, TouchableNativeFeedback } from 'react-native';
 import { NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack';
-import { exerciseTypes, EXERCISE_TYPES } from '../../utilities/Constants';
+import { splitType, SPLIT_TYPE } from '../../utilities/Constants';
 
 type Props = {
   navigation: NavigationStackProp<{ userId?: string }>
@@ -24,14 +24,14 @@ class AddExerciseType extends React.Component<Props> {
     }
   }
 
-  handlePress = (exerciseType: EXERCISE_TYPES) => {
-    this.props.navigation.navigate('AddExercise', { exerciseType })
+  handlePress = (splitType: SPLIT_TYPE) => {
+    this.props.navigation.navigate('AddExercise', { splitType })
   }
 
   render() {
     return (
       <View style={styles.container}>
-        {exerciseTypes.map((type: EXERCISE_TYPES, index: number) => (
+        {splitType.map((type: SPLIT_TYPE, index: number) => (
           <TouchableNativeFeedback
             onPress={() => this.handlePress(type)}
             key={index}

@@ -15,7 +15,7 @@
 //   WEIGHTED_DIPS = "Weighted Dips",
 //   DUMBELL_OVERHEAD_EXTENSIONS = "Dumbell Overhead Extensions",
 //   PAUSED_BARBELL_BENCH_PRESS = "Paused Barbell Bench Press",
-  
+
 //   // Pull
 //   WEIGHTED_PULLUPS = "Weighted Pullups",
 //   T_BAR_ROW = "T-Bar Row",
@@ -50,250 +50,297 @@
 //   SIDE_TWIST = "Side Twist"
 // }
 
-export enum EXERCISE_TYPES {
+export enum SPLIT_TYPE {
   PUSH = "push",
   PULL = "pull",
   LEGS = "legs"
 }
 
-export const exerciseTypes = [
-  EXERCISE_TYPES.PUSH,
-  EXERCISE_TYPES.PULL,
-  EXERCISE_TYPES.LEGS
+export enum BODY_PART {
+  SHOULDERS = "shoulders",
+  BICEPS = "biceps",
+  TRICEPS = "triceps",
+  CHEST = "chest",
+  LEGS = "legs",
+}
+
+export const splitType = [
+  SPLIT_TYPE.PUSH,
+  SPLIT_TYPE.PULL,
+  SPLIT_TYPE.LEGS
 ]
 
 export interface ExerciseName {
   name: string;
   description: string;
-  type: EXERCISE_TYPES;
+  splitType: SPLIT_TYPE;
+  bodyPart: BODY_PART,
 }
 
-export const exercises = {
-  push: [
-    {
-      name: "Barbell Bench Press",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Barbell Overhead Press",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Flat Dumbell Press",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Dumbell Flyes",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Side Raises",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Incline Skulls",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Pushdown",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Incline Barbell Bench Press",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Incline Dumbell Press",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Dumbell Shoulder Press",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Lower Cable Flyes",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Cable Side Raises",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Weighted Dips",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Dumbell Overhead Extensions",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-    {
-      name: "Paused Barbell Bench Press",
-      description: "",
-      type: EXERCISE_TYPES.PUSH
-    },
-  ],
-  pull: [
-    {
-      name: "Weighted Pullups",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "T-Bar Row",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "One Arm Reverse Pulldown",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Rear Delt Fly",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Barbell Shrugs",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Barbell Curl",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Incline Hammer Curl",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Rack Pull",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Barbell Row",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Pulldown",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "One Arm Machine Row",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Facepull",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Preacher Curl",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    },
-    {
-      name: "Reverse Barbell Curl",
-      description: "",
-      type: EXERCISE_TYPES.PULL
-    }
-  ],
-  legs: [
-    // Legs
-    {
-      name: "Barbell Squat",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Leg Press",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Stiff Legged Deadlift",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Hamstring Curl",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Standing Calf Raises",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Seated Calf Raises",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Ab Roller",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Cable Crunch",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Barbell Front Squat",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Lunges",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Glute Ham Raises",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Leg Extensions",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Leg Raises",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Weighted Crunch",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-    {
-      name: "Side Twist",
-      description: "",
-      type: EXERCISE_TYPES.LEGS
-    },
-  ]
-}
+export const exercises = [
+  {
+    name: "Barbell Bench Press",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Barbell Overhead Press",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Flat Dumbell Press",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Dumbell Flyes",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Side Raises",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Incline Skulls",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Pushdown",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Incline Barbell Bench Press",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Incline Dumbell Press",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Dumbell Shoulder Press",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Lower Cable Flyes",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Cable Side Raises",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Weighted Dips",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Dumbell Overhead Extensions",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Paused Barbell Bench Press",
+    description: "",
+    splitType: SPLIT_TYPE.PUSH,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Weighted Pullups",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "T-Bar Row",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "One Arm Reverse Pulldown",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Rear Delt Fly",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Barbell Shrugs",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Barbell Curl",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Incline Hammer Curl",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Rack Pull",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Barbell Row",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Pulldown",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "One Arm Machine Row",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Facepull",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Preacher Curl",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Reverse Barbell Curl",
+    description: "",
+    splitType: SPLIT_TYPE.PULL,
+    bodyPart: BODY_PART.CHEST,
+  },
+  // Legs
+  {
+    name: "Barbell Squat",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Leg Press",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Stiff Legged Deadlift",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Hamstring Curl",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Standing Calf Raises",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Seated Calf Raises",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Ab Roller",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Cable Crunch",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Barbell Front Squat",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Lunges",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Glute Ham Raises",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Leg Extensions",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Leg Raises",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Weighted Crunch",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+  {
+    name: "Side Twist",
+    description: "",
+    splitType: SPLIT_TYPE.LEGS,
+    bodyPart: BODY_PART.CHEST,
+  },
+]

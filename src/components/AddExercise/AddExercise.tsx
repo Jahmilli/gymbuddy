@@ -2,10 +2,10 @@ import React, { ChangeEvent } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack';
 import { FlatList, TouchableNativeFeedback } from 'react-native-gesture-handler';
-import { EXERCISE_TYPES, exercises, ExerciseName } from '../../utilities/Constants';
+import { SPLIT_TYPE, exercises, ExerciseName } from '../../utilities/Constants';
 
 type Props = {
-  navigation: NavigationStackProp<{ exerciseType: EXERCISE_TYPES }>
+  navigation: NavigationStackProp<{ exerciseType: SPLIT_TYPE }>
 }
 
 class AddExercise extends React.Component<Props> {
@@ -13,7 +13,7 @@ class AddExercise extends React.Component<Props> {
     username: "",
     password: ""
   }
-  exerciseType = this.props.navigation.getParam("exerciseType", "No Type Provided");
+  splitType = this.props.navigation.getParam("splitType", "No Type Provided");
 
   static navigationOptions = ({ navigation }): NavigationStackOptions => {
     return {
@@ -24,14 +24,16 @@ class AddExercise extends React.Component<Props> {
   render() {
     return (
     <View style={styles.container}>
-      <Text>Type is {this.exerciseType}</Text>
+      <Text>Type is {this.splitType}</Text>
     <FlatList<ExerciseName>
-      data={exercises[this.exerciseType]}
+      data={exercises.filter((val) => val.splitType === this.splitType)}
+      // data={exercises}
       keyExtractor={(item: ExerciseName) => item.name }
       renderItem={({ item }) => (
-        <TouchableNativeFeedback style={styles.item}>
-          {item.name}
-        </TouchableNativeFeedback>
+        <Text>{item.name}</Text>
+        // <TouchableNativeFeedback style={styles.item}>
+        //   {item.name}
+        // </TouchableNativeFeedback>
       )}
     />
     </View>
