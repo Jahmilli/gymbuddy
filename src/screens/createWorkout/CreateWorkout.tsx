@@ -46,11 +46,10 @@ class CreateWorkout extends React.Component<Props> {
           onChangeText={this.handleInputChange("description")}
           value={this.state.name}
         />
-      
-
+        <Text>Add Exercise</Text>
         <Button
-          title="Create Workout"
-          onPress={() => this.props.navigation.navigate('Create Workout')} 
+          title="Add Exercise"
+          onPress={() => this.props.navigation.navigate('AddExerciseType')}
         />
       </View>
     );
@@ -60,13 +59,13 @@ class CreateWorkout extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'center'
+    // flexDirection: 'column',
+    // justifyContent: 'center',
+    // alignItems: 'center'
   },
   input: {
     backgroundColor: "#eee",
-    borderRadius: 15,
+    // width: 100,
     marginBottom: 25,
     paddingLeft: 10,
     paddingRight: 10

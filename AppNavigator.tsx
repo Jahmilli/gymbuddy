@@ -3,6 +3,8 @@ import { createAppContainer } from "react-navigation";
 import LoginScreen from './src/screens/login/LoginScreen';
 import HomeScreen from './src/screens/home/HomeScreen';
 import CreateWorkout from "./src/screens/createWorkout/CreateWorkout";
+import AddExerciseType from "./src/components/AddExerciseType/AddExerciseType";
+import AddExercise from "./src/components/AddExercise/AddExercise";
 
 const AppNavigation = createStackNavigator(
   {
@@ -14,6 +16,12 @@ const AppNavigation = createStackNavigator(
     },
     CreateWorkout: {
       screen: CreateWorkout
+    },
+    AddExerciseType: {
+      screen: AddExerciseType
+    },
+    AddExercise: {
+      screen: AddExercise
     }
   },
   {
