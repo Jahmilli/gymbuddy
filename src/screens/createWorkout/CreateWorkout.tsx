@@ -10,7 +10,7 @@ type Props = {
 const intialWorkoutState: Workout = {
   name: '',
   description: '',
-  exercises: []
+  exercises: [],
 };
 
 const numColumns = 3;
@@ -21,9 +21,13 @@ class CreateWorkout extends React.Component<Props> {
     title: "Create Workout",
   }
 
-  componentDidUpdate() {
-    const exercise = this.props.navigation.getParam("exercise", "No Exercise Provided");
-    if (this.state.exercises[this.state.exercises.length - 1] !== exercise) {
+  isCompleteWorkout = () => {
+    return this.state.exercises.length > 0 && this.state.name.length > 0 && this.state.description.length > 0;
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const exercise = this.props.navigation.getParam("exercise", null);
+    if (exercise && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
       this.setState({
         exercises: [...this.state.exercises, exercise]
       });
@@ -60,7 +64,6 @@ class CreateWorkout extends React.Component<Props> {
           onChangeText={this.handleInputChange("description")}
           value={this.state.description}
         />
-        <Text>Add Exercise</Text>
         <Button
           title="Add Exercise"
           onPress={() => this.props.navigation.navigate('AddExerciseType')}
@@ -72,6 +75,13 @@ class CreateWorkout extends React.Component<Props> {
           keyExtractor={(item: Exercise) => item.name}
           numColumns={numColumns}
         />
+        { this.isCompleteWorkout() ?
+          <Button
+            title="Create Workout"
+            onPress={() => this.props.navigation.navigate('Home')}
+          />
+          : null
+        }
       </View>
     );
   }
@@ -80,9 +90,6 @@ class CreateWorkout extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // flexDirection: 'column',
-    // justifyContent: 'center',
-    // alignItems: 'center'
   },
   input: {
     backgroundColor: "#eee",
