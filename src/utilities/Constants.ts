@@ -1,3 +1,5 @@
+import { SPLIT_TYPE, BODY_PART } from "../logic/domains/Workout.domain"
+
 // export enum EXERCISES {
 //   // Push
 //   BARBELL_BENCH_PRESS = "Barbell Bench Press",
@@ -50,32 +52,12 @@
 //   SIDE_TWIST = "Side Twist"
 // }
 
-export enum SPLIT_TYPE {
-  PUSH = "push",
-  PULL = "pull",
-  LEGS = "legs"
-}
-
-export enum BODY_PART {
-  SHOULDERS = "shoulders",
-  BICEPS = "biceps",
-  TRICEPS = "triceps",
-  CHEST = "chest",
-  LEGS = "legs",
-}
-
 export const splitType = [
   SPLIT_TYPE.PUSH,
   SPLIT_TYPE.PULL,
   SPLIT_TYPE.LEGS
 ]
 
-export interface ExerciseName {
-  name: string;
-  description: string;
-  splitType: SPLIT_TYPE;
-  bodyPart: BODY_PART,
-}
 
 export const exercises = [
   {

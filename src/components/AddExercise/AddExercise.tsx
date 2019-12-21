@@ -2,7 +2,8 @@ import React, { ChangeEvent } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack';
 import { FlatList, TouchableNativeFeedback } from 'react-native-gesture-handler';
-import { SPLIT_TYPE, exercises, ExerciseName } from '../../utilities/Constants';
+import { exercises } from '../../utilities/Constants';
+import { SPLIT_TYPE, Exercise } from '../../logic/domains/Workout.domain';
 
 type Props = {
   navigation: NavigationStackProp<{ exerciseType: SPLIT_TYPE }>
@@ -20,20 +21,28 @@ class AddExercise extends React.Component<Props> {
       title: "Add Exercise Type" 
     }
   }
+  
+  handlePress = (item: Exercise) => {
+    this.props.navigation.navigate('CreateWorkout', { exercise: item })
+    // this.props.navigation.navigate({routeName: "CreateWorkout", params: item})
+  }
 
   render() {
     return (
     <View style={styles.container}>
       <Text>Type is {this.splitType}</Text>
-    <FlatList<ExerciseName>
+    <FlatList<Exercise>
       data={exercises.filter((val) => val.splitType === this.splitType)}
-      // data={exercises}
-      keyExtractor={(item: ExerciseName) => item.name }
+      keyExtractor={(item: Exercise) => item.name }
       renderItem={({ item }) => (
-        <Text>{item.name}</Text>
-        // <TouchableNativeFeedback style={styles.item}>
-        //   {item.name}
-        // </TouchableNativeFeedback>
+        <TouchableNativeFeedback 
+          onPress={() => this.handlePress(item)}
+          style={styles.item}>
+          <View>
+            <Text>{item.name}</Text>
+            <Text>{item.bodyPart}</Text>
+          </View>
+        </TouchableNativeFeedback>
       )}
     />
     </View>
@@ -47,9 +56,11 @@ const styles = StyleSheet.create({
     padding: 25
   },
   item: {
-    padding: 10,
+    borderColor: 'black',
+    borderWidth: 1,
     fontSize: 18,
     height: 44,
+    marginTop: 4
   }
 });
 
