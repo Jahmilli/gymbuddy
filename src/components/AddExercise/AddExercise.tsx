@@ -2,8 +2,9 @@ import React, { ChangeEvent } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack';
 import { FlatList, TouchableNativeFeedback } from 'react-native-gesture-handler';
-import { exercises } from '../../utilities/Constants';
+// import { exercises } from '../../utilities/Constants';
 import { SPLIT_TYPE, Exercise } from '../../logic/domains/Workout.domain';
+import { getAllExercises } from '../../logic/functions/exercies';
 
 type Props = {
   navigation: NavigationStackProp<{ exerciseType: SPLIT_TYPE }>
@@ -11,10 +12,53 @@ type Props = {
 
 class AddExercise extends React.Component<Props> {
   state = {
-    username: "",
-    password: ""
+    exercises: []
   }
   splitType = this.props.navigation.getParam("splitType", "No Type Provided");
+
+
+  componentDidMount() {
+    const getExercises = async () => {
+      try {
+        // console.log('splti is ', splitType);
+        const exerciseResults: any = await getAllExercises(this.splitType);
+        const jsonResults = await exerciseResults.json();
+        console.log('results  are ', jsonResults);
+        this.setState({
+          exercises: jsonResults
+        })
+      } catch(err) {
+        console.log('An error occurred when getting all exercises', err);
+      }
+
+    }
+    // console.log('state ', this.state, prevState);
+    // if (this.state.exercises !== prevState.exercises) {
+      console.log('calling get exercises');
+      getExercises();
+    // }
+  }
+  
+  // componentDidUpdate(prevProps, prevState, snapshot) {
+  //   async function getExercises() {
+  //     try {
+  //       // console.log('splti is ', splitType);
+  //       const exerciseResults = await getAllExercises("push");
+  //       console.log('results  are ', exerciseResults);
+  //       this.setState({
+  //         exercises: exerciseResults
+  //       })
+  //     } catch(err) {
+  //       console.log('An error occurred when getting all exercises', err);
+  //     }
+
+  //   }
+  //   console.log('state ', this.state, prevState);
+  //   if (this.state.exercises !== prevState.exercises) {
+  //     console.log('calling get exercises');
+  //     getExercises();
+  //   }
+  // }
 
   static navigationOptions = ({ navigation }): NavigationStackOptions => {
     return {
@@ -22,7 +66,7 @@ class AddExercise extends React.Component<Props> {
     }
   }
   
-  handlePress = (item: Exercise) => {
+  handlePress(item: Exercise) {
     this.props.navigation.navigate('CreateWorkout', { exercise: item })
     // this.props.navigation.navigate({routeName: "CreateWorkout", params: item})
   }
@@ -32,7 +76,7 @@ class AddExercise extends React.Component<Props> {
     <View style={styles.container}>
       <Text>Type is {this.splitType}</Text>
     <FlatList<Exercise>
-      data={exercises.filter((val) => val.splitType === this.splitType)}
+      data={this.state.exercises}
       keyExtractor={(item: Exercise) => item.name }
       renderItem={({ item }) => (
         <TouchableNativeFeedback 

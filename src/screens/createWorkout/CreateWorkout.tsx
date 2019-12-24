@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput, Dimensions } from 'react-nat
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 import { Exercise, Workout } from '../../logic/domains/Workout.domain';
 import { FlatList } from 'react-native-gesture-handler';
+import { createWorkout } from '../../logic/functions/workout';
 
 type Props = {
   navigation: NavigationStackProp<{ userId?: string }>
@@ -13,21 +14,39 @@ const intialWorkoutState: Workout = {
   exercises: [],
 };
 
+const renderExercise = ({ item }: { item: Exercise}) => {
+  return (
+    <View style={styles.exercise}>
+      <Text style={styles.Exercise}>{item.name}</Text>
+      <Text style={styles.exerciseDescription}>{item.splitType}</Text>
+    </View>
+  )
+}
 const numColumns = 3;
 class CreateWorkout extends React.Component<Props> {
   state = intialWorkoutState;
 
   static navigationOptions: NavigationStackOptions = {
-    title: "Create Workout",
+    title: 'Create Workout',
   }
 
   isCompleteWorkout = () => {
     return this.state.exercises.length > 0 && this.state.name.length > 0 && this.state.description.length > 0;
   }
 
+  isNewExercise = (exercise: string) => {
+    for (const index in this.state.exercises) {
+      if (this.state.exercises[index].name === exercise) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // TODO: Determine if using componentDidMount is better here
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const exercise = this.props.navigation.getParam("exercise", null);
-    if (exercise && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
+    const exercise = this.props.navigation.getParam('exercise', null);
+    if (exercise && this.isNewExercise && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
       this.setState({
         exercises: [...this.state.exercises, exercise]
       });
@@ -40,13 +59,14 @@ class CreateWorkout extends React.Component<Props> {
     });
   }
 
-  renderExercise = ({ item }: { item: Exercise}) => {
-    return (
-      <View style={styles.exercise}>
-        <Text style={styles.Exercise}>{item.name}</Text>
-        <Text style={styles.exerciseDescription}>{item.splitType}</Text>
-      </View>
-    )
+  handleCreateWorkout = async () => {
+    try {
+      console.log('exercises in handlecreate', JSON.stringify(this.state));
+      await createWorkout(this.state);
+      this.props.navigation.navigate('Home'); 
+    } catch(err) {
+      console.log('An error occurred when creating workout', err);
+    }
   }
 
   render() {
@@ -55,30 +75,30 @@ class CreateWorkout extends React.Component<Props> {
         <Text>Workout Name</Text>
         <TextInput
           style={styles.input}
-          onChangeText={this.handleInputChange("name")}
+          onChangeText={this.handleInputChange('name')}
           value={this.state.name}
         />
         <Text>Description</Text>
         <TextInput
           style={styles.input}
-          onChangeText={this.handleInputChange("description")}
+          onChangeText={this.handleInputChange('description')}
           value={this.state.description}
         />
         <Button
-          title="Add Exercise"
+          title='Add Exercise'
           onPress={() => this.props.navigation.navigate('AddExerciseType')}
         />
         <FlatList 
           data={this.state.exercises}
           style={styles.exerciseList}
-          renderItem={this.renderExercise}
+          renderItem={renderExercise}
           keyExtractor={(item: Exercise) => item.name}
           numColumns={numColumns}
         />
         { this.isCompleteWorkout() ?
           <Button
-            title="Create Workout"
-            onPress={() => this.props.navigation.navigate('Home')}
+            title='Create Workout'
+            onPress={this.handleCreateWorkout}
           />
           : null
         }
@@ -92,7 +112,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input: {
-    backgroundColor: "#eee",
+    backgroundColor: '#eee',
     marginBottom: 25,
     paddingLeft: 10,
     paddingRight: 10
