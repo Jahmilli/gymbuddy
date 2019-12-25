@@ -31,33 +31,10 @@ class AddExercise extends React.Component<Props> {
       }
 
     }
-    // console.log('state ', this.state, prevState);
-    // if (this.state.exercises !== prevState.exercises) {
-      console.log('calling get exercises');
-      getExercises();
-    // }
+    console.log('calling get exercises');
+    getExercises();
   }
-  
-  // componentDidUpdate(prevProps, prevState, snapshot) {
-  //   async function getExercises() {
-  //     try {
-  //       // console.log('splti is ', splitType);
-  //       const exerciseResults = await getAllExercises("push");
-  //       console.log('results  are ', exerciseResults);
-  //       this.setState({
-  //         exercises: exerciseResults
-  //       })
-  //     } catch(err) {
-  //       console.log('An error occurred when getting all exercises', err);
-  //     }
 
-  //   }
-  //   console.log('state ', this.state, prevState);
-  //   if (this.state.exercises !== prevState.exercises) {
-  //     console.log('calling get exercises');
-  //     getExercises();
-  //   }
-  // }
 
   static navigationOptions = ({ navigation }): NavigationStackOptions => {
     return {

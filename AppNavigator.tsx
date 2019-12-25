@@ -5,6 +5,7 @@ import HomeScreen from './src/screens/home/HomeScreen';
 import CreateWorkout from "./src/screens/createWorkout/CreateWorkout";
 import AddExerciseType from "./src/components/AddExerciseType/AddExerciseType";
 import AddExercise from "./src/components/AddExercise/AddExercise";
+import AddExerciseInfo from "./src/components/AddExerciseInfo/AddExerciseInfo";
 
 const AppNavigation = createStackNavigator(
   {
@@ -22,6 +23,9 @@ const AppNavigation = createStackNavigator(
     },
     AddExercise: {
       screen: AddExercise
+    },
+    AddExerciseInfo: {
+      screen: AddExerciseInfo
     }
   },
   {

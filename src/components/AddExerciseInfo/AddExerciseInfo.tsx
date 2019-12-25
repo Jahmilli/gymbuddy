@@ -5,15 +5,15 @@ import { View, StyleSheet, Text } from "react-native";
 
 type Props = {
   navigation: NavigationStackProp;
-  exercise: Exercise
 }
 
 class AddExerciseInfo extends React.Component<Props> {
+  exercise: Exercise = this.props.navigation.getParam("exercise", null);
 
   render() {
     return (
       <View style={styles.container}>
-        <Text>{this.props.exercise.name}</Text>
+        <Text>{this.exercise.name}</Text>
       </View>
     );
   }
@@ -25,4 +25,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddExercise;
+export default AddExerciseInfo;

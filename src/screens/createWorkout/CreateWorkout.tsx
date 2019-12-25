@@ -70,7 +70,7 @@ class CreateWorkout extends React.Component<Props> {
     return (
       <View style={styles.exercise}>
         <Text style={styles.removeExercise} onPress={() => this.removeExercise(item)}>X</Text>
-        <Text style={styles.exerciseName}>{item.name}</Text>
+        <Text style={styles.exerciseName} onPress={() => this.handleSelectExercise(item)}>{item.name}</Text>
         <Text style={styles.exerciseDescription}>{item.bodyPart}</Text>
         <Text style={styles.exerciseDescription}>{item.splitType}</Text>
       </View>
@@ -84,6 +84,10 @@ class CreateWorkout extends React.Component<Props> {
     this.setState({
       exercises: newExercises
     });
+  }
+
+  handleSelectExercise(exercise: Exercise) {
+    this.props.navigation.navigate('AddExerciseInfo', { exercise })
   }
 
   handleCreateWorkout = async () => {
