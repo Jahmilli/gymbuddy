@@ -18,6 +18,7 @@ export enum BODY_PART {
   LEGS = "legs",
 }
 export interface Exercise {
+  exercise_id: number;
   name: string;
   description: string;
   splitType: SPLIT_TYPE;

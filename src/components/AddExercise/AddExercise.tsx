@@ -23,7 +23,6 @@ class AddExercise extends React.Component<Props> {
         // console.log('splti is ', splitType);
         const exerciseResults: any = await getAllExercises(this.splitType);
         const jsonResults = await exerciseResults.json();
-        console.log('results  are ', jsonResults);
         this.setState({
           exercises: jsonResults
         })

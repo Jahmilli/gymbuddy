@@ -8,54 +8,81 @@ import { createWorkout } from '../../logic/functions/workout';
 type Props = {
   navigation: NavigationStackProp<{ userId?: string }>
 }
+
 const intialWorkoutState: Workout = {
   name: '',
   description: '',
   exercises: [],
 };
 
-const renderExercise = ({ item }: { item: Exercise}) => {
-  return (
-    <View style={styles.exercise}>
-      <Text style={styles.Exercise}>{item.name}</Text>
-      <Text style={styles.exerciseDescription}>{item.splitType}</Text>
-    </View>
-  )
-}
+// Determines number of columns in exercises grid
 const numColumns = 3;
 class CreateWorkout extends React.Component<Props> {
-  state = intialWorkoutState;
-
+  state = {
+    ...intialWorkoutState
+  }
+  
   static navigationOptions: NavigationStackOptions = {
     title: 'Create Workout',
   }
-
+  
+  // Check function for verifying all fields are added
   isCompleteWorkout = () => {
     return this.state.exercises.length > 0 && this.state.name.length > 0 && this.state.description.length > 0;
   }
-
-  isNewExercise = (exercise: string) => {
-    for (const index in this.state.exercises) {
-      if (this.state.exercises[index].name === exercise) {
+  
+  // Used to make sure only unique exercises are added
+  // TODO: Fix this
+  isNewExercise = (exerciseName: string | null, exercises: Exercise[]) => {
+    // console.log('checking exercsies', exercise, this.state.exercises);
+    if (!exerciseName) {
+      return false;
+    }
+    for (const index in exercises) {
+      if (exercises[index].name === exerciseName) {
         return false;
       }
     }
     return true;
   }
-
-  // TODO: Determine if using componentDidMount is better here
+  
   componentDidUpdate(prevProps, prevState, snapshot) {
     const exercise = this.props.navigation.getParam('exercise', null);
-    if (exercise && this.isNewExercise && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
+    
+    // TODO: Fix this, it sucks...
+    if (this.isNewExercise(exercise, this.state.exercises)
+      && prevState.exercises[prevState.exercises.length-1] !== exercise
+      && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
       this.setState({
-        exercises: [...this.state.exercises, exercise]
+        exercises: [...this.state.exercises, exercise],
+        initialLoad: false
       });
     }
   }
-
+  
   handleInputChange = (key: string) => (text: string) => {
     this.setState({
       [key]: text
+    });
+  }
+  
+  renderExercise = ({ item }: { item: Exercise}) => {
+    return (
+      <View style={styles.exercise}>
+        <Text style={styles.removeExercise} onPress={() => this.removeExercise(item)}>X</Text>
+        <Text style={styles.exerciseName}>{item.name}</Text>
+        <Text style={styles.exerciseDescription}>{item.bodyPart}</Text>
+        <Text style={styles.exerciseDescription}>{item.splitType}</Text>
+      </View>
+    )
+  }
+
+  removeExercise(exercise: Exercise) {
+    let newExercises = [...this.state.exercises];
+    newExercises = newExercises.filter((item: Exercise) => item !== exercise);
+    console.log('new exercises is', newExercises);
+    this.setState({
+      exercises: newExercises
     });
   }
 
@@ -91,7 +118,7 @@ class CreateWorkout extends React.Component<Props> {
         <FlatList 
           data={this.state.exercises}
           style={styles.exerciseList}
-          renderItem={renderExercise}
+          renderItem={this.renderExercise}
           keyExtractor={(item: Exercise) => item.name}
           numColumns={numColumns}
         />
@@ -122,7 +149,7 @@ const styles = StyleSheet.create({
     marginVertical: 20
   },
   exercise: {
-    backgroundColor: 'tomato',
+    backgroundColor: '#00bfff',
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
@@ -130,9 +157,16 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').width / numColumns,
     borderRadius: 5
   },
-  Exercise: {
+  removeExercise: {
+    position: 'absolute',
+    top: 0,
+    right: 0
+  },
+  exerciseName: {
+
   },
   exerciseDescription: {
+
   }
 });
 
