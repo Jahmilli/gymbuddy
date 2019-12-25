@@ -59,13 +59,15 @@ class CreateWorkout extends React.Component<Props> {
       });
     }
   }
-  
+ 
+  // TODO: Change to function, not arrow function as we want the context to be bound to the class enclosing this function
   handleInputChange = (key: string) => (text: string) => {
     this.setState({
       [key]: text
     });
   }
   
+  // TODO: Change to function, not arrow function as we want the context to be bound to the class enclosing this function
   renderExercise = ({ item }: { item: Exercise}) => {
     return (
       <View style={styles.exercise}>

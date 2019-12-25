@@ -10,7 +10,7 @@ import AddExerciseInfo from "./src/components/AddExerciseInfo/AddExerciseInfo";
 const AppNavigation = createStackNavigator(
   {
     Login: {
-      screen: LoginScreen
+      screen: AddExerciseInfo
     },
     Home: {
       screen: HomeScreen

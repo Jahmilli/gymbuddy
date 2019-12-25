@@ -24,3 +24,9 @@ export interface Exercise {
   splitType: SPLIT_TYPE;
   bodyPart: BODY_PART,
 }
+
+export interface Set {
+  repetitions: number;
+  restTime: number;
+  setNumber: number;
+}

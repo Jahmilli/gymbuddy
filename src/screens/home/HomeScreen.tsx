@@ -14,7 +14,7 @@ class HomeScreen extends React.Component<Props> {
   render() {
     return (
     <View style={styles.container}>
-      <Text>This is the login Screen</Text>
+      <Text>This is the Home Screen</Text>
       <Button
         title="Create Workout"
         onPress={() => this.props.navigation.navigate('CreateWorkout')} 
