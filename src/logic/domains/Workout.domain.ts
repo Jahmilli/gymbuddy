@@ -1,7 +1,7 @@
 export interface Workout {
   name: string;
   description: string;
-  exercises: Exercise[];
+  exercises: WorkoutExercise[];
 }
 
 export enum SPLIT_TYPE {
@@ -17,12 +17,20 @@ export enum BODY_PART {
   CHEST = "chest",
   LEGS = "legs",
 }
+
 export interface Exercise {
   exercise_id: number;
   name: string;
   description: string;
   splitType: SPLIT_TYPE;
   bodyPart: BODY_PART,
+}
+
+export interface WorkoutExercise extends Exercise{
+  workoutExerciseId: string;
+  workoutId: number;
+  orderNumber: number;
+  sets: Set[];
 }
 
 export interface Set {

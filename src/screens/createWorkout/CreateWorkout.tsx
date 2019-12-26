@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Dimensions } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
-import { Exercise, Workout } from '../../logic/domains/Workout.domain';
+import { Exercise, Workout, WorkoutExercise, Set } from '../../logic/domains/Workout.domain';
 import { FlatList } from 'react-native-gesture-handler';
 import { createWorkout } from '../../logic/functions/workout';
 
@@ -22,6 +22,7 @@ class CreateWorkout extends React.Component<Props> {
     ...intialWorkoutState
   }
   
+  // Configure the navigation bar
   static navigationOptions: NavigationStackOptions = {
     title: 'Create Workout',
   }
@@ -32,9 +33,9 @@ class CreateWorkout extends React.Component<Props> {
   }
   
   // Used to make sure only unique exercises are added
-  // TODO: Fix this
-  isNewExercise = (exerciseName: string | null, exercises: Exercise[]) => {
-    // console.log('checking exercsies', exercise, this.state.exercises);
+  // TBA: Might be better to just use a Set and then convert to array when submitting
+  isNewExercise = (exerciseName: string | null, exercises: WorkoutExercise[]) => {
+    console.log('checking exercsies', exerciseName, exercises);
     if (!exerciseName) {
       return false;
     }
@@ -47,10 +48,11 @@ class CreateWorkout extends React.Component<Props> {
   }
   
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const exercise = this.props.navigation.getParam('exercise', null);
+    const exercise: WorkoutExercise = this.props.navigation.getParam('exercise', null);
+    const exerciseSets: Set[] = this.props.navigation.getParam('sets', null)
     
-    // TODO: Fix this, it sucks...
-    if (this.isNewExercise(exercise, this.state.exercises)
+    // TODO: Fix this, it sucks... (Used for adding unique exercises from AddExercise)
+    if (this.isNewExercise(exercise.name, this.state.exercises)
       && prevState.exercises[prevState.exercises.length-1] !== exercise
       && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
       this.setState({
@@ -58,43 +60,49 @@ class CreateWorkout extends React.Component<Props> {
         initialLoad: false
       });
     }
+
+    // Used when we add sets to an exercise
+    if (exerciseSets && prevProps.navigation.getParam('sets') !== exerciseSets) {
+      const exercises = [...this.state.exercises];
+      for (let i in exercises) {
+        if (exercises[i] === exercise) {
+          exercises[i].sets = exerciseSets;
+          break;
+        }
+      }
+      this.setState({ exercises });
+    }
   }
  
-  // TODO: Change to function, not arrow function as we want the context to be bound to the class enclosing this function
   handleInputChange = (key: string) => (text: string) => {
     this.setState({
       [key]: text
     });
   }
   
-  // TODO: Change to function, not arrow function as we want the context to be bound to the class enclosing this function
-  renderExercise = ({ item }: { item: Exercise}) => {
-    return (
-      <View style={styles.exercise}>
-        <Text style={styles.removeExercise} onPress={() => this.removeExercise(item)}>X</Text>
-        <Text style={styles.exerciseName} onPress={() => this.handleSelectExercise(item)}>{item.name}</Text>
-        <Text style={styles.exerciseDescription}>{item.bodyPart}</Text>
-        <Text style={styles.exerciseDescription}>{item.splitType}</Text>
-      </View>
-    )
-  }
+  renderExercise = ({ item }: { item: WorkoutExercise}) => (
+    <View style={styles.exercise}>
+      <Text style={styles.removeExercise} onPress={() => this.removeExercise(item)}>X</Text>
+      <Text style={styles.exerciseName} onPress={() => this.handleSelectExercise(item)}>{item.name}</Text>
+      <Text style={styles.exerciseDescription}>{item.bodyPart}</Text>
+      <Text style={styles.exerciseDescription}>{item.splitType}</Text>
+    </View>
+  )
 
-  removeExercise(exercise: Exercise) {
+  removeExercise(exercise: WorkoutExercise) {
     let newExercises = [...this.state.exercises];
-    newExercises = newExercises.filter((item: Exercise) => item !== exercise);
-    console.log('new exercises is', newExercises);
+    newExercises = newExercises.filter((item: WorkoutExercise) => item !== exercise);
     this.setState({
       exercises: newExercises
     });
   }
 
-  handleSelectExercise(exercise: Exercise) {
+  handleSelectExercise(exercise: WorkoutExercise) {
     this.props.navigation.navigate('AddExerciseInfo', { exercise })
   }
 
   handleCreateWorkout = async () => {
     try {
-      console.log('exercises in handlecreate', JSON.stringify(this.state));
       await createWorkout(this.state);
       this.props.navigation.navigate('Home'); 
     } catch(err) {
@@ -125,7 +133,7 @@ class CreateWorkout extends React.Component<Props> {
           data={this.state.exercises}
           style={styles.exerciseList}
           renderItem={this.renderExercise}
-          keyExtractor={(item: Exercise) => item.name}
+          keyExtractor={(item: WorkoutExercise) => item.name}
           numColumns={numColumns}
         />
         { this.isCompleteWorkout() ?

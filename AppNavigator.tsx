@@ -10,7 +10,7 @@ import AddExerciseInfo from "./src/components/AddExerciseInfo/AddExerciseInfo";
 const AppNavigation = createStackNavigator(
   {
     Login: {
-      screen: AddExerciseInfo
+      screen: LoginScreen
     },
     Home: {
       screen: HomeScreen
@@ -29,7 +29,7 @@ const AppNavigation = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'CreateWorkout',
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: '#f4511e',

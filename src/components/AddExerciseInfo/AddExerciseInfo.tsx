@@ -1,24 +1,18 @@
 import React from "react";
 import { NavigationStackProp } from "react-navigation-stack";
-import { Exercise, SPLIT_TYPE, BODY_PART, Set } from "../../logic/domains/Workout.domain";
+import { Exercise, SPLIT_TYPE, BODY_PART, Set, WorkoutExercise } from "../../logic/domains/Workout.domain";
 import { View, StyleSheet, Text, TextInput, Button, FlatList, Dimensions } from "react-native";
 
 type Props = {
   navigation: NavigationStackProp;
 }
 
-const defaultExercise: Exercise = {
-  exercise_id: 123,
-  name: 'bench press',
-  description: 'push a bar',
-  splitType: SPLIT_TYPE.PUSH,
-  bodyPart: BODY_PART.CHEST
-}
-
 const numColumns = 3;
 class AddExerciseInfo extends React.Component<Props> {
+  exercise: WorkoutExercise = this.props.navigation.getParam("exercise", null);
   state = {
     sets: [],
+    // Used when editing a particular set
     currentSet: {
       repetitions: 0,
       restTime: 0,
@@ -27,7 +21,18 @@ class AddExerciseInfo extends React.Component<Props> {
     updatingSet: false
   }
 
-  exercise: Exercise = this.props.navigation.getParam("exercise", defaultExercise);
+
+  componentDidMount() {
+    const sets = this.exercise.sets;
+    if (sets) {
+      const currentSet = {...sets[sets.length - 1]};
+      currentSet.setNumber = currentSet.setNumber + 1;
+      this.setState({
+        sets,
+        currentSet
+      });
+    }
+  }
 
 
   handleInputChange = (key: string) => (text: string) => {
@@ -79,6 +84,13 @@ class AddExerciseInfo extends React.Component<Props> {
     )
   }
 
+  handleSubmit = () => {
+    this.props.navigation.navigate('CreateWorkout', { 
+      exercise: this.exercise,
+      sets: this.state.sets
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -104,6 +116,13 @@ class AddExerciseInfo extends React.Component<Props> {
             keyboardType="numeric"
             value={this.state.currentSet.restTime.toString()}
           />
+          { this.state.sets.length > 0 ?
+            <Button
+                title="Done"
+                onPress={this.handleSubmit}
+              />
+            : null
+          }
           {
             this.state.updatingSet ?
             <Button
