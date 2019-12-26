@@ -29,24 +29,14 @@ class AddExerciseInfo extends React.Component<Props> {
 
   exercise: Exercise = this.props.navigation.getParam("exercise", defaultExercise);
 
+
   handleInputChange = (key: string) => (text: string) => {
-    const sets = [...this.state.sets];
-    this.state.currentSet[key] = text;
-    this.setState({ sets });
+    const currentSet = { ...this.state.currentSet }
+    currentSet[key] = text;
+    this.setState({ currentSet });
   }
 
-
-  // For updating selected sets
-  handleUpdateSet = (setNumber: number) => {
-    const updatedSets = [...this.state.sets];
-    updatedSets[setNumber] = this.state.currentSet;
-    this.setState({
-      sets: updatedSets,
-      updatingSet: false
-    });
-  }
-
-  // For adding new sets
+  // When add set is pressed
   handleAddSet = () => {
     this.setState({
       sets: [...this.state.sets, this.state.currentSet],
@@ -56,7 +46,22 @@ class AddExerciseInfo extends React.Component<Props> {
       }
     });
   }
+  
+  // When update button is pressed
+  handleUpdateSet = () => {
+    const sets = [...this.state.sets];
+    sets[this.state.currentSet.setNumber] = { ...this.state.currentSet } // Using spread to create a new object but might not need to do this
+    this.setState({
+      sets,
+      updatingSet: false,
+      currentSet: {
+        ...this.state.currentSet,
+        setNumber: this.state.sets.length
+      }
+    });
+  }
 
+  // When a set is pressed
   handlePressSet = (set: Set) => {
     this.setState({
       currentSet: set,
@@ -67,7 +72,7 @@ class AddExerciseInfo extends React.Component<Props> {
   renderSet = ({ item }: { item: Set}) => {
     return (
       <View style={styles.set}>
-        <Text style={styles.setNumber} onPress={() => this.handlePressSet(item)} >Set Number: {item.setNumber}</Text>
+        <Text style={styles.setNumber} onPress={() => this.handlePressSet(item)}>Set Number: {item.setNumber + 1}</Text>
         <Text style={styles.setRepetitions}>Reps: {item.repetitions}</Text>
         <Text style={styles.setRestTime}>Rest Time: {item.restTime}</Text>
       </View>
@@ -92,7 +97,7 @@ class AddExerciseInfo extends React.Component<Props> {
             keyboardType="numeric"
             value={this.state.currentSet.repetitions.toString()}
           />
-          <Text>Rest Time</Text>
+          <Text>Rest Time (Seconds)</Text>
           <TextInput
             style={styles.input}
             onChangeText={this.handleInputChange("restTime")}
@@ -101,15 +106,15 @@ class AddExerciseInfo extends React.Component<Props> {
           />
           {
             this.state.updatingSet ?
-              <Button
-                title="Update Set"
-                onPress={this.handleAddSet}
-              />
+            <Button
+              title="Update Set"
+              onPress={this.handleUpdateSet}
+            />
             :
-              <Button
-                title="Add Set"
-                onPress={this.handleAddSet}
-              />
+            <Button
+              title="Add Set"
+              onPress={this.handleAddSet}
+            />
           }
         </View>
         <FlatList
