@@ -18,32 +18,56 @@ const defaultExercise: Exercise = {
 const numColumns = 3;
 class AddExerciseInfo extends React.Component<Props> {
   state = {
-    sets: [{
+    sets: [],
+    currentSet: {
       repetitions: 0,
       restTime: 0,
       setNumber: 0
-    }],
-    currentViewedSet: 0
+    },
+    updatingSet: false
   }
 
   exercise: Exercise = this.props.navigation.getParam("exercise", defaultExercise);
 
   handleInputChange = (key: string) => (text: string) => {
     const sets = [...this.state.sets];
-    sets[this.state.currentViewedSet][key] = text;
+    this.state.currentSet[key] = text;
     this.setState({ sets });
   }
 
 
-  handleAddSet() {
+  // For updating selected sets
+  handleUpdateSet = (setNumber: number) => {
+    const updatedSets = [...this.state.sets];
+    updatedSets[setNumber] = this.state.currentSet;
+    this.setState({
+      sets: updatedSets,
+      updatingSet: false
+    });
+  }
 
+  // For adding new sets
+  handleAddSet = () => {
+    this.setState({
+      sets: [...this.state.sets, this.state.currentSet],
+      currentSet: {
+        ...this.state.currentSet,
+        setNumber: this.state.currentSet.setNumber + 1
+      }
+    });
+  }
+
+  handlePressSet = (set: Set) => {
+    this.setState({
+      currentSet: set,
+      updatingSet: true
+    })
   }
 
   renderSet = ({ item }: { item: Set}) => {
     return (
       <View style={styles.set}>
-        {/* <Text style={styles.removeExercise} onPress={() => this.removeExercise(item)}>X</Text> */}
-        <Text style={styles.setNumber}>Set Number: {item.setNumber}</Text>
+        <Text style={styles.setNumber} onPress={() => this.handlePressSet(item)} >Set Number: {item.setNumber}</Text>
         <Text style={styles.setRepetitions}>Reps: {item.repetitions}</Text>
         <Text style={styles.setRestTime}>Rest Time: {item.restTime}</Text>
       </View>
@@ -60,25 +84,33 @@ class AddExerciseInfo extends React.Component<Props> {
           <Text>{this.exercise.bodyPart}</Text>
         </View>
         <View>
-          <Text>Set: {this.state.currentViewedSet}</Text>
+          <Text>Set: {this.state.currentSet.setNumber}</Text>
           <Text>Repetitions</Text>
           <TextInput
             style={styles.input}
             onChangeText={this.handleInputChange("repetitions")}
             keyboardType="numeric"
-            value={this.state.sets[this.state.currentViewedSet].repetitions.toString()}
+            value={this.state.currentSet.repetitions.toString()}
           />
           <Text>Rest Time</Text>
           <TextInput
             style={styles.input}
             onChangeText={this.handleInputChange("restTime")}
             keyboardType="numeric"
-            value={this.state.sets[this.state.currentViewedSet].restTime.toString()}
-          />    
-          <Button
-            title="Go to Home Page"
-            onPress={this.handleAddSet}
+            value={this.state.currentSet.restTime.toString()}
           />
+          {
+            this.state.updatingSet ?
+              <Button
+                title="Update Set"
+                onPress={this.handleAddSet}
+              />
+            :
+              <Button
+                title="Add Set"
+                onPress={this.handleAddSet}
+              />
+          }
         </View>
         <FlatList
           data={this.state.sets}
