@@ -1,9 +1,8 @@
-import React, { ChangeEvent } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack';
 import { FlatList, TouchableNativeFeedback } from 'react-native-gesture-handler';
-// import { exercises } from '../../utilities/Constants';
-import { SPLIT_TYPE, Exercise } from '../../logic/domains/Workout.domain';
+import { SPLIT_TYPE, IExercise } from '../../logic/domains/Workout.domain';
 import { getAllExercises } from '../../logic/functions/exercies';
 
 type Props = {
@@ -16,11 +15,9 @@ class AddExercise extends React.Component<Props> {
   }
   splitType = this.props.navigation.getParam("splitType", "No Type Provided");
 
-
   componentDidMount() {
     const getExercises = async () => {
       try {
-        // console.log('splti is ', splitType);
         const exerciseResults: any = await getAllExercises(this.splitType);
         const jsonResults = await exerciseResults.json();
         this.setState({
@@ -31,7 +28,6 @@ class AddExercise extends React.Component<Props> {
       }
 
     }
-    console.log('calling get exercises');
     getExercises();
   }
 
@@ -42,7 +38,7 @@ class AddExercise extends React.Component<Props> {
     }
   }
   
-  handlePress(item: Exercise) {
+  handlePress(item: IExercise) {
     this.props.navigation.navigate('CreateWorkout', { exercise: item })
     // this.props.navigation.navigate({routeName: "CreateWorkout", params: item})
   }
@@ -51,9 +47,9 @@ class AddExercise extends React.Component<Props> {
     return (
     <View style={styles.container}>
       <Text>Type is {this.splitType}</Text>
-    <FlatList<Exercise>
+    <FlatList<IExercise>
       data={this.state.exercises}
-      keyExtractor={(item: Exercise) => item.name }
+      keyExtractor={(item: IExercise) => item.name }
       renderItem={({ item }) => (
         <TouchableNativeFeedback 
           onPress={() => this.handlePress(item)}

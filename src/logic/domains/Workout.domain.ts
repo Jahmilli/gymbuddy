@@ -1,8 +1,4 @@
-export interface Workout {
-  name: string;
-  description: string;
-  exercises: WorkoutExercise[];
-}
+// Contains all interfaces for the template workouts
 
 export enum SPLIT_TYPE {
   PUSH = "push",
@@ -17,23 +13,34 @@ export enum BODY_PART {
   CHEST = "chest",
   LEGS = "legs",
 }
+export interface IWorkout {
+  name: string;
+  description: string;
+  exercises: WorkoutExercise[];
+  stars: number;
+  shared: boolean;
+  workoutTimestamp: Date
+  createdBy: string;
+}
 
-export interface Exercise {
+export interface IExercise {
   exercise_id: number;
   name: string;
   description: string;
   splitType: SPLIT_TYPE;
-  bodyPart: BODY_PART,
+  bodyPart: BODY_PART;
+  sets: ISet[];
 }
 
-export interface WorkoutExercise extends Exercise{
+
+export interface WorkoutExercise extends IExercise {
   workoutExerciseId: string;
   workoutId: number;
   orderNumber: number;
-  sets: Set[];
+  sets: ISet[];
 }
 
-export interface Set {
+export interface ISet {
   repetitions: number;
   restTime: number;
   setNumber: number;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Dimensions } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
-import { Exercise, Workout, WorkoutExercise, Set } from '../../logic/domains/Workout.domain';
+import { IWorkout, WorkoutExercise, ISet } from '../../logic/domains/Workout.domain';
 import { FlatList } from 'react-native-gesture-handler';
 import { createWorkout } from '../../logic/functions/workout';
 
@@ -9,10 +9,14 @@ type Props = {
   navigation: NavigationStackProp<{ userId?: string }>
 }
 
-const intialWorkoutState: Workout = {
+const intialWorkoutState: IWorkout = {
   name: '',
   description: '',
   exercises: [],
+  stars: 0,
+  shared: false,
+  workoutTimestamp: null,
+  createdBy: ""
 };
 
 // Determines number of columns in exercises grid
@@ -20,7 +24,7 @@ const numColumns = 3;
 class CreateWorkout extends React.Component<Props> {
   state = {
     ...intialWorkoutState
-  }
+  } as IWorkout;
   
   // Configure the navigation bar
   static navigationOptions: NavigationStackOptions = {
@@ -34,25 +38,30 @@ class CreateWorkout extends React.Component<Props> {
   
   // Used to make sure only unique exercises are added
   // TBA: Might be better to just use a Set and then convert to array when submitting
-  isNewExercise = (exerciseName: string | null, exercises: WorkoutExercise[]) => {
-    console.log('checking exercsies', exerciseName, exercises);
-    if (!exerciseName) {
+  isNewExercise = (exercise: WorkoutExercise | null, exercises: WorkoutExercise[]) => {
+    if (!exercise) {
       return false;
     }
     for (const index in exercises) {
-      if (exercises[index].name === exerciseName) {
+      if (exercises[index].name === exercise.name) {
         return false;
       }
     }
     return true;
   }
+
+  componentDidMount() {
+    this.setState({
+      createdBy: "b5452a48-85d7-4900-8c90-bc81b8e5b485" // Creating temporary userid for now
+    });
+  }
   
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState) {
     const exercise: WorkoutExercise = this.props.navigation.getParam('exercise', null);
-    const exerciseSets: Set[] = this.props.navigation.getParam('sets', null)
+    const exerciseSets: ISet[] = this.props.navigation.getParam('sets', null)
     
     // TODO: Fix this, it sucks... (Used for adding unique exercises from AddExercise)
-    if (this.isNewExercise(exercise.name, this.state.exercises)
+    if (this.isNewExercise(exercise, this.state.exercises)
       && prevState.exercises[prevState.exercises.length-1] !== exercise
       && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
       this.setState({
@@ -103,6 +112,10 @@ class CreateWorkout extends React.Component<Props> {
 
   handleCreateWorkout = async () => {
     try {
+      console.log('this state is ', this.state);
+      this.setState({
+        workoutTimestamp: Date.now()
+      })
       await createWorkout(this.state);
       this.props.navigation.navigate('Home'); 
     } catch(err) {

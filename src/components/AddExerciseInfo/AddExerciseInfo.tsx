@@ -1,6 +1,6 @@
 import React from "react";
 import { NavigationStackProp } from "react-navigation-stack";
-import { Exercise, SPLIT_TYPE, BODY_PART, Set, WorkoutExercise } from "../../logic/domains/Workout.domain";
+import { ISet, WorkoutExercise } from "../../logic/domains/Workout.domain";
 import { View, StyleSheet, Text, TextInput, Button, FlatList, Dimensions } from "react-native";
 
 type Props = {
@@ -37,7 +37,7 @@ class AddExerciseInfo extends React.Component<Props> {
 
   handleInputChange = (key: string) => (text: string) => {
     const currentSet = { ...this.state.currentSet }
-    currentSet[key] = text;
+    currentSet[key] = parseInt(text) || 0;
     this.setState({ currentSet });
   }
 
@@ -67,14 +67,14 @@ class AddExerciseInfo extends React.Component<Props> {
   }
 
   // When a set is pressed
-  handlePressSet = (set: Set) => {
+  handlePressSet = (set: ISet) => {
     this.setState({
       currentSet: set,
       updatingSet: true
     })
   }
 
-  renderSet = ({ item }: { item: Set}) => {
+  renderSet = ({ item }: { item: ISet}) => {
     return (
       <View style={styles.set}>
         <Text style={styles.setNumber} onPress={() => this.handlePressSet(item)}>Set Number: {item.setNumber + 1}</Text>
@@ -140,7 +140,7 @@ class AddExerciseInfo extends React.Component<Props> {
           data={this.state.sets}
           style={styles.setList}
           renderItem={this.renderSet}
-          keyExtractor={(set: Set) => set.setNumber.toString()}
+          keyExtractor={(set: ISet) => set.setNumber.toString()}
           numColumns={numColumns}
         />
       </View>
