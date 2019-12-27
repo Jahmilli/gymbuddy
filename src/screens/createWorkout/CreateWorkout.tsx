@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Dimensions, CheckBox } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 import { IWorkout, IWorkoutExercise, ISet } from '../../logic/domains/Workout.domain';
 import { FlatList } from 'react-native-gesture-handler';
@@ -140,6 +140,15 @@ class CreateWorkout extends React.Component<Props> {
           onChangeText={this.handleInputChange('description')}
           value={this.state.description}
         />
+        <View style={styles.checkboxLockup}>
+          <CheckBox
+            value={this.state.shared}
+            onChange={() => {
+              this.setState({ shared: !this.state.shared})
+            }}
+          />
+          <Text>Shared?</Text>
+        </View>
         <Button
           title='Add Exercise'
           onPress={() => this.props.navigation.navigate('AddExerciseType')}
@@ -172,6 +181,11 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     paddingLeft: 10,
     paddingRight: 10
+  },
+  checkboxLockup: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   exerciseList: {
     flex: 1,
