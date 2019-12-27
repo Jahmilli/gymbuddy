@@ -1,6 +1,6 @@
 import React from "react";
 import { NavigationStackProp } from "react-navigation-stack";
-import { ISet, WorkoutExercise } from "../../logic/domains/Workout.domain";
+import { ISet, IWorkoutExercise } from "../../logic/domains/Workout.domain";
 import { View, StyleSheet, Text, TextInput, Button, FlatList, Dimensions } from "react-native";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 
 const numColumns = 3;
 class AddExerciseInfo extends React.Component<Props> {
-  exercise: WorkoutExercise = this.props.navigation.getParam("exercise", null);
+  exercise: IWorkoutExercise = this.props.navigation.getParam("exercise", null);
   state = {
     sets: [],
     // Used when editing a particular set

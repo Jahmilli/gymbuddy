@@ -14,9 +14,10 @@ export enum BODY_PART {
   LEGS = "legs",
 }
 export interface IWorkout {
+  workoutId: string;
   name: string;
   description: string;
-  exercises: WorkoutExercise[];
+  exercises: IWorkoutExercise[];
   stars: number;
   shared: boolean;
   workoutTimestamp: Date
@@ -24,7 +25,7 @@ export interface IWorkout {
 }
 
 export interface IExercise {
-  exercise_id: number;
+  exerciseId: number;
   name: string;
   description: string;
   splitType: SPLIT_TYPE;
@@ -33,7 +34,7 @@ export interface IExercise {
 }
 
 
-export interface WorkoutExercise extends IExercise {
+export interface IWorkoutExercise extends IExercise {
   workoutExerciseId: string;
   workoutId: number;
   orderNumber: number;

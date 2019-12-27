@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Dimensions } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
-import { IWorkout, WorkoutExercise, ISet } from '../../logic/domains/Workout.domain';
+import { IWorkout, IWorkoutExercise, ISet } from '../../logic/domains/Workout.domain';
 import { FlatList } from 'react-native-gesture-handler';
 import { createWorkout } from '../../logic/functions/workout';
+import { StackActions } from 'react-navigation';
 
 type Props = {
   navigation: NavigationStackProp<{ userId?: string }>
@@ -38,7 +39,7 @@ class CreateWorkout extends React.Component<Props> {
   
   // Used to make sure only unique exercises are added
   // TBA: Might be better to just use a Set and then convert to array when submitting
-  isNewExercise = (exercise: WorkoutExercise | null, exercises: WorkoutExercise[]) => {
+  isNewExercise = (exercise: IWorkoutExercise | null, exercises: IWorkoutExercise[]) => {
     if (!exercise) {
       return false;
     }
@@ -57,7 +58,7 @@ class CreateWorkout extends React.Component<Props> {
   }
   
   componentDidUpdate(prevProps, prevState) {
-    const exercise: WorkoutExercise = this.props.navigation.getParam('exercise', null);
+    const exercise: IWorkoutExercise = this.props.navigation.getParam('exercise', null);
     const exerciseSets: ISet[] = this.props.navigation.getParam('sets', null)
     
     // TODO: Fix this, it sucks... (Used for adding unique exercises from AddExercise)
@@ -89,35 +90,36 @@ class CreateWorkout extends React.Component<Props> {
     });
   }
   
-  renderExercise = ({ item }: { item: WorkoutExercise}) => (
+  renderExercise = ({ item }: { item: IWorkoutExercise}) => (
     <View style={styles.exercise}>
       <Text style={styles.removeExercise} onPress={() => this.removeExercise(item)}>X</Text>
       <Text style={styles.exerciseName} onPress={() => this.handleSelectExercise(item)}>{item.name}</Text>
       <Text style={styles.exerciseDescription}>{item.bodyPart}</Text>
       <Text style={styles.exerciseDescription}>{item.splitType}</Text>
     </View>
-  )
+  );
 
-  removeExercise(exercise: WorkoutExercise) {
+  removeExercise(exercise: IWorkoutExercise) {
     let newExercises = [...this.state.exercises];
-    newExercises = newExercises.filter((item: WorkoutExercise) => item !== exercise);
+    newExercises = newExercises.filter((item: IWorkoutExercise) => item !== exercise);
     this.setState({
       exercises: newExercises
     });
   }
 
-  handleSelectExercise(exercise: WorkoutExercise) {
+  handleSelectExercise(exercise: IWorkoutExercise) {
     this.props.navigation.navigate('AddExerciseInfo', { exercise })
   }
 
   handleCreateWorkout = async () => {
     try {
-      console.log('this state is ', this.state);
       this.setState({
         workoutTimestamp: Date.now()
       })
       await createWorkout(this.state);
-      this.props.navigation.navigate('Home'); 
+      this.props.navigation.navigate('Home', {
+        action: StackActions.POP
+      })
     } catch(err) {
       console.log('An error occurred when creating workout', err);
     }
@@ -146,7 +148,7 @@ class CreateWorkout extends React.Component<Props> {
           data={this.state.exercises}
           style={styles.exerciseList}
           renderItem={this.renderExercise}
-          keyExtractor={(item: WorkoutExercise) => item.name}
+          keyExtractor={(item: IWorkoutExercise) => item.name}
           numColumns={numColumns}
         />
         { this.isCompleteWorkout() ?

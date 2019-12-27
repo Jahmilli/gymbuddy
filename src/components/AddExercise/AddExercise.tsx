@@ -47,20 +47,20 @@ class AddExercise extends React.Component<Props> {
     return (
     <View style={styles.container}>
       <Text>Type is {this.splitType}</Text>
-    <FlatList<IExercise>
-      data={this.state.exercises}
-      keyExtractor={(item: IExercise) => item.name }
-      renderItem={({ item }) => (
-        <TouchableNativeFeedback 
-          onPress={() => this.handlePress(item)}
-          style={styles.item}>
-          <View>
-            <Text>{item.name}</Text>
-            <Text>{item.bodyPart}</Text>
-          </View>
-        </TouchableNativeFeedback>
-      )}
-    />
+      <FlatList<IExercise>
+        data={this.state.exercises}
+        keyExtractor={(item: IExercise) => item.name }
+        renderItem={({ item }) => (
+          <TouchableNativeFeedback 
+            onPress={() => this.handlePress(item)}
+            style={styles.item}>
+            <View>
+              <Text>{item.name}</Text>
+              <Text>{item.bodyPart}</Text>
+            </View>
+          </TouchableNativeFeedback>
+        )}
+      />
     </View>
   );
   }
