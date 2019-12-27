@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack';
 import { FlatList, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { SPLIT_TYPE, IExercise } from '../../logic/domains/Workout.domain';
-import { getAllExercises } from '../../logic/functions/exercies';
+import { getAllExercises } from '../../logic/functions/exercises';
 
 type Props = {
   navigation: NavigationStackProp<{ exerciseType: SPLIT_TYPE }>

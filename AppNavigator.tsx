@@ -29,7 +29,7 @@ const AppNavigation = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'CreateWorkout',
+    initialRouteName: 'Login',
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: '#f4511e',
