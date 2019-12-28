@@ -13,6 +13,7 @@ export enum BODY_PART {
   CHEST = "chest",
   LEGS = "legs",
 }
+
 export interface IWorkout {
   workoutId?: string; // This is created when the workout is submitted to the backend
   name: string;
@@ -32,7 +33,6 @@ export interface IExercise {
   bodyPart: BODY_PART;
   sets: ISet[];
 }
-
 
 export interface IWorkoutExercise extends IExercise {
   workoutExerciseId: string;

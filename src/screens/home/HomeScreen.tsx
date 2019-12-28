@@ -35,9 +35,13 @@ class HomeScreen extends React.Component<Props> {
     callGetWorkouts();
   }
 
+  handleSelectWorkout = (workout: IWorkout) => {
+    this.props.navigation.navigate('TemplateWorkout', { workout })
+  }
+
   renderWorkout = ({ item }: { item: IWorkout }) => (
     <View style={styles.workout}>
-      <Text>{item.name}</Text>
+      <Text onPress={() => this.handleSelectWorkout(item)}>{item.name}</Text>
       <Text>{item.description}</Text>
       <Text>{item.stars}</Text>
     </View>

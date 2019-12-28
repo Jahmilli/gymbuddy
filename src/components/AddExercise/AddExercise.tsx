@@ -13,7 +13,7 @@ class AddExercise extends React.Component<Props> {
   state = {
     exercises: []
   }
-  splitType = this.props.navigation.getParam("splitType", "No Type Provided");
+  splitType: SPLIT_TYPE = this.props.navigation.getParam("splitType", "No Type Provided");
 
   componentDidMount() {
     const getExercises = async () => {

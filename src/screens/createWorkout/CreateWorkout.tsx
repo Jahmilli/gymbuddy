@@ -53,7 +53,8 @@ class CreateWorkout extends React.Component<Props> {
 
   componentDidMount() {
     this.setState({
-      createdBy: "b5452a48-85d7-4900-8c90-bc81b8e5b485" // Creating temporary userid for now
+      createdBy: "b5452a48-85d7-4900-8c90-bc81b8e5b485", // Creating temporary userid for now
+      workoutTimestamp: Date.now()
     });
   }
   
@@ -66,11 +67,9 @@ class CreateWorkout extends React.Component<Props> {
       && prevState.exercises[prevState.exercises.length-1] !== exercise
       && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
       this.setState({
-        exercises: [...this.state.exercises, exercise],
-        initialLoad: false
+        exercises: [...this.state.exercises, exercise]
       });
     }
-
     // Used when we add sets to an exercise
     if (exerciseSets && prevProps.navigation.getParam('sets') !== exerciseSets) {
       const exercises = [...this.state.exercises];
