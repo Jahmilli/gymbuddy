@@ -21,8 +21,18 @@ export interface IWorkout {
   exercises: IWorkoutExercise[];
   stars: number;
   shared: boolean;
-  workoutTimestamp: Date
+  workoutTimestamp: Date;
   createdBy: string;
+}
+
+export interface IComment {
+  commentId: string;
+  workoutId: number;
+  comment: string;
+  stars: number;
+  replyTo: string;
+  userId: string;
+  commentTimestamp: Date;
 }
 
 export interface IExercise {

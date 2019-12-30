@@ -22,7 +22,7 @@ class AddExercise extends React.Component<Props> {
         const jsonResults = await exerciseResults.json();
         this.setState({
           exercises: jsonResults
-        })
+        });
       } catch(err) {
         console.log('An error occurred when getting all exercises', err);
       }
