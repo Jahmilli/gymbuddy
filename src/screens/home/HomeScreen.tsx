@@ -61,13 +61,13 @@ class HomeScreen extends React.Component<Props> {
           renderItem={this.renderWorkout}
           keyExtractor={(item: IWorkout, index: number) => `${item.name}-${index}`}
           />
-        <Text>Shared Template Workouts</Text>
+        {/* <Text>Shared Template Workouts</Text>
         <FlatList
           data={this.state.sharedWorkouts}
           style={styles.workoutsList}
           renderItem={this.renderWorkout}
           keyExtractor={(item: IWorkout, index: number) => `${item.name}-${index}`}
-          />
+          /> */}
       </View>
     );
   }
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     fontSize: 18,
-    height: 75,
+    height: 100,
     marginTop: 4
   }
 });

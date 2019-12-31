@@ -15,7 +15,7 @@ export enum BODY_PART {
 }
 
 export interface IWorkout {
-  workoutId?: string; // This is created when the workout is submitted to the backend
+  workoutId?: number; // This is created when the workout is submitted to the backend
   name: string;
   description: string;
   exercises: IWorkoutExercise[];

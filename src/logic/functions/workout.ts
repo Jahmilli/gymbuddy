@@ -12,12 +12,11 @@ export const createWorkout = async (workout: IWorkout) => {
 }
 
 
-export const getComments = async (workoutId: string): Promise<IComment[]> => {
+export const getComments = async (workoutId: number): Promise<IComment[]> => {
   const result: any = await get(`http://192.168.0.8:3001/api/v1/workout/comments?workoutId=${workoutId}`);
   return await result.json();
 }
 
-
 export const createComment = async (comment: IComment) => {
-  return await post('http://192.168.0.8:3001/api/v1/workout/create', JSON.stringify(comment));
+  return await post('http://192.168.0.8:3001/api/v1/workout/comments/create', JSON.stringify(comment));
 }
