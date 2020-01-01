@@ -4,10 +4,16 @@ import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-elements";
 import { IWorkout, IComment } from "../../logic/domains/Workout.domain";
 import { FlatList, TextInput } from "react-native-gesture-handler";
-import { getComments, createComment } from "../../logic/functions/workout";
+import { getComments, createComment, getWorkoutExercises } from "../../logic/functions/workout";
+import ExerciseList from "../ExerciseList/ExerciseList";
 
 type Props = {
   navigation: NavigationStackProp;
+}
+
+const initialCommentState = {
+  comment: '',
+  replyTo: undefined
 }
 
 class TemplateWorkout extends React.Component<Props> {
@@ -15,10 +21,10 @@ class TemplateWorkout extends React.Component<Props> {
     title: "Template Workout", 
   }
   state = {
+    exercises: [],
     comments: [],
     newComment: {
-      comment: '',
-      replyTo: undefined,
+      ...initialCommentState
     }
   }
   workout: IWorkout = this.props.navigation.getParam("workout", null);
@@ -26,13 +32,20 @@ class TemplateWorkout extends React.Component<Props> {
   componentDidMount() {
     const callGetComments = async () => {
       try {
-        const comments = await getComments(this.workout.workoutId);
-        this.setState({ comments })
+        const comments = getComments(this.workout.workoutId);
+        const workoutExercises = getWorkoutExercises(this.workout.workoutId);
+        const results = await Promise.all([comments, workoutExercises]);
+        console.log('results are ', results);
+        this.setState({ 
+          comments: results[0],
+          exercises: results[1]
+        });
       } catch(err) {
         console.log('An error occurred when getting comments', err);
       }
     }
     callGetComments();
+    console.log('exerc', this.workout);
   }
 
   renderComment = ({ item }: { item: IComment }) => (
@@ -42,6 +55,8 @@ class TemplateWorkout extends React.Component<Props> {
       <Text>Likes: {item.ratings}</Text>
     </View>
   );
+
+  
 
   handleInputChange = (replyTo: string = '') => (text: string) => {
     this.setState({
@@ -63,6 +78,11 @@ class TemplateWorkout extends React.Component<Props> {
           commentTimestamp: new Date()
         } as IComment
       );
+      this.setState({
+        newComment: {
+          ...initialCommentState
+        }
+      })
       const comments = await getComments(this.workout.workoutId);
       this.setState({ comments })
     } catch(err) {
@@ -78,6 +98,7 @@ class TemplateWorkout extends React.Component<Props> {
         <Text style={styles.createdBy}>{this.workout.createdBy}</Text>
         <Text style={styles.description}>Description: {this.workout.description}</Text>
         <Text>Likes: {this.workout.ratings}</Text>
+        <ExerciseList exercises={this.state.exercises} handleSelectItem={() => ''} />
         <Text style={styles.commentHeading}>Comments: </Text>
         <TextInput
           style={styles.input}

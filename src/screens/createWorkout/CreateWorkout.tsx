@@ -2,9 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Dimensions, CheckBox } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 import { IWorkout, IWorkoutExercise, ISet } from '../../logic/domains/Workout.domain';
-import { FlatList } from 'react-native-gesture-handler';
 import { createWorkout } from '../../logic/functions/workout';
 import { StackActions } from 'react-navigation';
+import ExerciseList from '../../components/ExerciseList/ExerciseList';
 
 type Props = {
   navigation: NavigationStackProp<{ userId?: string }>
@@ -88,17 +88,8 @@ class CreateWorkout extends React.Component<Props> {
       [key]: text
     });
   }
-  
-  renderExercise = ({ item }: { item: IWorkoutExercise}) => (
-    <View style={styles.exercise}>
-      <Text style={styles.removeExercise} onPress={() => this.removeExercise(item)}>X</Text>
-      <Text style={styles.exerciseName} onPress={() => this.handleSelectExercise(item)}>{item.name}</Text>
-      <Text style={styles.exerciseDescription}>{item.bodyPart}</Text>
-      <Text style={styles.exerciseDescription}>{item.splitType}</Text>
-    </View>
-  );
 
-  removeExercise(exercise: IWorkoutExercise) {
+  removeExercise = (exercise: IWorkoutExercise) => {
     let newExercises = [...this.state.exercises];
     newExercises = newExercises.filter((item: IWorkoutExercise) => item !== exercise);
     this.setState({
@@ -106,7 +97,7 @@ class CreateWorkout extends React.Component<Props> {
     });
   }
 
-  handleSelectExercise(exercise: IWorkoutExercise) {
+  handleSelectExercise = (exercise: IWorkoutExercise) => {
     this.props.navigation.navigate('AddExerciseInfo', { exercise })
   }
 
@@ -152,13 +143,7 @@ class CreateWorkout extends React.Component<Props> {
           title='Add Exercise'
           onPress={() => this.props.navigation.navigate('AddExerciseType')}
         />
-        <FlatList 
-          data={this.state.exercises}
-          style={styles.exerciseList}
-          renderItem={this.renderExercise}
-          keyExtractor={(item: IWorkoutExercise) => item.name}
-          numColumns={numColumns}
-        />
+        <ExerciseList exercises={this.state.exercises} removeExercise={this.removeExercise} handleSelectItem={this.handleSelectExercise} />
         { this.isCompleteWorkout() ?
           <Button
             title='Create Workout'
@@ -185,30 +170,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center'
-  },
-  exerciseList: {
-    flex: 1,
-    marginVertical: 20
-  },
-  exercise: {
-    backgroundColor: '#00bfff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    margin: 1,
-    height: Dimensions.get('window').width / numColumns,
-    borderRadius: 5
-  },
-  removeExercise: {
-    position: 'absolute',
-    top: 0,
-    right: 0
-  },
-  exerciseName: {
-
-  },
-  exerciseDescription: {
-
   }
 });
 

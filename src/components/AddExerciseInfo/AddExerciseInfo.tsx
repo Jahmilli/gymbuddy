@@ -116,23 +116,16 @@ class AddExerciseInfo extends React.Component<Props> {
             keyboardType="numeric"
             value={this.state.currentSet.restTime.toString()}
           />
-          { this.state.sets.length > 0 ?
-            <Button
-                title="Done"
-                onPress={this.handleSubmit}
-              />
-            : null
-          }
           {
             this.state.updatingSet ?
             <Button
-              title="Update Set"
-              onPress={this.handleUpdateSet}
+            title="Update Set"
+            onPress={this.handleUpdateSet}
             />
             :
             <Button
-              title="Add Set"
-              onPress={this.handleAddSet}
+            title="Add Set"
+            onPress={this.handleAddSet}
             />
           }
         </View>
@@ -142,7 +135,14 @@ class AddExerciseInfo extends React.Component<Props> {
           renderItem={this.renderSet}
           keyExtractor={(set: ISet) => set.setNumber.toString()}
           numColumns={numColumns}
-        />
+          />
+        { this.state.sets.length > 0 ?
+          <Button
+              title="Done"
+              onPress={this.handleSubmit}
+            />
+          : null
+        }
       </View>
     );
   }

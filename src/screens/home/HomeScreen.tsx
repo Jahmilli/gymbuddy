@@ -35,6 +35,7 @@ class HomeScreen extends React.Component<Props> {
     callGetWorkouts();
   }
 
+  // Navigate to more information about that workout
   handleSelectWorkout = (workout: IWorkout) => {
     this.props.navigation.navigate('TemplateWorkout', { workout })
   }

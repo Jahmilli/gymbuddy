@@ -1,6 +1,7 @@
 import { get } from "./core/fetch"
+import { IExercise } from "../domains/Workout.domain";
 
-export const getAllExercises = async (payload: string) => {
-  console.log('payload is ', payload);
-  return await get(`http://192.168.0.8:3001/api/v1/exercise?splitType=${payload}`)
+export const getAllExercisesBySplitType = async (splitType: string): Promise<IExercise[]> => {
+  const exercisesRes: any = await get(`http://192.168.0.8:3001/api/v1/exercise?splitType=${splitType}`);
+  return await exercisesRes.json();
 }

@@ -18,7 +18,7 @@ export interface IWorkout {
   workoutId?: number; // This is created when the workout is submitted to the backend
   name: string;
   description: string;
-  exercises: IWorkoutExercise[];
+  exercises?: IWorkoutExercise[];
   ratings: number;
   shared: boolean;
   workoutTimestamp: Date;

@@ -33,7 +33,7 @@ class SharedWorkouts extends React.Component<Props> {
   }
 
   handleSelectWorkout = (workout: IWorkout) => {
-
+    this.props.navigation.navigate('TemplateWorkout', { workout })
   }
 
   renderWorkout = ({ item }: { item: IWorkout }) => (
