@@ -2,6 +2,7 @@ import { post, get } from './core/fetch';
 import { IWorkout, IComment } from '../domains/Workout.domain';
 
 export const getWorkouts = async (userId?: string): Promise<IWorkout> => {
+  // If user id is not specified we will get all "shared" workouts
   const queryParam = userId ? `?userId=${userId}` : '';
   const result: any = await get(`http://192.168.0.8:3001/api/v1/workout${queryParam}`);
   return await result.json();

@@ -43,7 +43,7 @@ class HomeScreen extends React.Component<Props> {
     <View style={styles.workout}>
       <Text onPress={() => this.handleSelectWorkout(item)}>{item.name}</Text>
       <Text>{item.description}</Text>
-      <Text>{item.stars}</Text>
+      <Text>{item.ratings}</Text>
     </View>
   );
 
@@ -53,6 +53,10 @@ class HomeScreen extends React.Component<Props> {
         <Button
           title="Create Workout"
           onPress={() => this.props.navigation.navigate('CreateWorkout')} 
+        />
+        <Button
+          title="View Shared Workouts"
+          onPress={() => this.props.navigation.navigate('SharedWorkouts')} 
         />
         <Text>Your Template Workouts</Text>
         <FlatList

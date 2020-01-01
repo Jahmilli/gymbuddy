@@ -14,7 +14,7 @@ const intialWorkoutState: IWorkout = {
   name: '',
   description: '',
   exercises: [],
-  stars: 0,
+  ratings: 0,
   shared: false,
   workoutTimestamp: null,
   createdBy: ""

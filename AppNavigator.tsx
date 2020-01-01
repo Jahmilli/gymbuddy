@@ -7,6 +7,7 @@ import AddExerciseType from "./src/components/AddExerciseType/AddExerciseType";
 import AddExercise from "./src/components/AddExercise/AddExercise";
 import AddExerciseInfo from "./src/components/AddExerciseInfo/AddExerciseInfo";
 import TemplateWorkout from "./src/components/TemplateWorkout/TemplateWorkout";
+import SharedWorkouts from "./src/components/SharedWorkouts/SharedWorkouts";
 
 const AppNavigation = createStackNavigator(
   {
@@ -30,6 +31,9 @@ const AppNavigation = createStackNavigator(
     },
     TemplateWorkout: {
       screen: TemplateWorkout
+    },
+    SharedWorkouts: {
+      screen: SharedWorkouts
     }
   },
   {

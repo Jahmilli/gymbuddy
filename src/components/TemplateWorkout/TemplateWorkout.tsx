@@ -19,7 +19,6 @@ class TemplateWorkout extends React.Component<Props> {
     newComment: {
       comment: '',
       replyTo: undefined,
-
     }
   }
   workout: IWorkout = this.props.navigation.getParam("workout", null);
@@ -40,7 +39,7 @@ class TemplateWorkout extends React.Component<Props> {
     <View style={styles.comment}>
       <Text>{item.comment}</Text>
       <Text>{item.commentTimestamp}</Text>
-      <Text>Likes: {item.stars}</Text>
+      <Text>Likes: {item.ratings}</Text>
     </View>
   );
 
@@ -53,20 +52,19 @@ class TemplateWorkout extends React.Component<Props> {
     })
   }
 
-  handleSubmitChange = async () => {
+  handleSubmitComment = async () => {
     try {
-      const commentRes = await createComment(
+      await createComment(
         {
-          commentId: '',
           workoutId: this.workout.workoutId,
           comment: this.state.newComment.comment,
-          stars: 0,
           replyTo: this.state.newComment.replyTo,
           userId: "b5452a48-85d7-4900-8c90-bc81b8e5b485", // Creating temporary userid for no
           commentTimestamp: new Date()
         } as IComment
       );
-      console.log('comment response is ', commentRes);
+      const comments = await getComments(this.workout.workoutId);
+      this.setState({ comments })
     } catch(err) {
       alert('An error occurred when submitting comment');
       console.log('err is ', err);
@@ -79,12 +77,12 @@ class TemplateWorkout extends React.Component<Props> {
         <Text style={styles.title}>{this.workout.name}</Text>
         <Text style={styles.createdBy}>{this.workout.createdBy}</Text>
         <Text style={styles.description}>Description: {this.workout.description}</Text>
-        <Text>Likes: {this.workout.stars}</Text>
+        <Text>Likes: {this.workout.ratings}</Text>
         <Text style={styles.commentHeading}>Comments: </Text>
         <TextInput
           style={styles.input}
           onChangeText={this.handleInputChange()}
-          onSubmitEditing={this.handleSubmitChange}
+          onSubmitEditing={this.handleSubmitComment}
           placeholder="Write a comment..."
           value={this.state.newComment.comment}
         />
