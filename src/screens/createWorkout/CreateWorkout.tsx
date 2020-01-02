@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Dimensions, CheckBox } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
-import { IWorkout, IWorkoutExercise, ISet } from '../../logic/domains/Workout.domain';
+import { IWorkout, IWorkoutExercise, ISet, IExercise } from '../../logic/domains/Workout.domain';
 import { createWorkout } from '../../logic/functions/workout';
 import { StackActions } from 'react-navigation';
 import ExerciseList from '../../components/ExerciseList/ExerciseList';
@@ -20,8 +20,6 @@ const intialWorkoutState: IWorkout = {
   createdBy: ""
 };
 
-// Determines number of columns in exercises grid
-const numColumns = 3;
 class CreateWorkout extends React.Component<Props> {
   state = {
     ...intialWorkoutState
@@ -39,7 +37,7 @@ class CreateWorkout extends React.Component<Props> {
   
   // Used to make sure only unique exercises are added
   // TBA: Might be better to just use a Set and then convert to array when submitting
-  isNewExercise = (exercise: IWorkoutExercise | null, exercises: IWorkoutExercise[]) => {
+  isNewExercise = (exercise: IExercise | null, exercises: IWorkoutExercise[]) => {
     if (!exercise) {
       return false;
     }
@@ -57,29 +55,43 @@ class CreateWorkout extends React.Component<Props> {
       workoutTimestamp: Date.now()
     });
   }
+
+  // Takes a new exercise and returns a correctly formatted WorkoutExercise
+  convertToWorkoutExercise = (exercise: IExercise): IWorkoutExercise => {
+    return {
+      ...exercise,
+      orderNumber: this.state.exercises.length - 1,
+      sets: [
+        {
+        repetitions: 0,
+        restTime: 0,
+        setNumber: 0
+        }
+      ]
+    }   
+  } 
   
-  componentDidUpdate(prevProps, prevState) {
-    const exercise: IWorkoutExercise = this.props.navigation.getParam('exercise', null);
-    const exerciseSets: ISet[] = this.props.navigation.getParam('sets', null)
-    
-    // TODO: Fix this, it sucks... (Used for adding unique exercises from AddExercise)
-    if (this.isNewExercise(exercise, this.state.exercises)
-      && prevState.exercises[prevState.exercises.length-1] !== exercise
-      && this.state.exercises[this.state.exercises.length - 1] !== exercise) {
-      this.setState({
-        exercises: [...this.state.exercises, exercise]
-      });
-    }
-    // Used when we add sets to an exercise
-    if (exerciseSets && prevProps.navigation.getParam('sets') !== exerciseSets) {
-      const exercises = [...this.state.exercises];
-      for (let i in exercises) {
-        if (exercises[i] === exercise) {
+  updateSets = (workoutExercise: IWorkoutExercise, exerciseSets: ISet[]) => {
+    const exercises = [...this.state.exercises];
+      for (const i in exercises) {
+        if (exercises[i] === workoutExercise) {
           exercises[i].sets = exerciseSets;
           break;
         }
       }
-      this.setState({ exercises });
+    this.setState({ exercises })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const newExercise: IExercise = this.props.navigation.getParam('newExercise', null);
+    
+    // TODO: Fix this, it sucks... (Used for adding unique exercises from AddExercise)
+    if (this.isNewExercise(newExercise, this.state.exercises)
+    && prevState.exercises[prevState.exercises.length-1] !== newExercise
+    && this.state.exercises[this.state.exercises.length - 1] !== newExercise) { 
+      this.setState({
+        exercises: [...this.state.exercises, this.convertToWorkoutExercise(newExercise)]
+      });
     }
   }
  
@@ -98,7 +110,10 @@ class CreateWorkout extends React.Component<Props> {
   }
 
   handleSelectExercise = (exercise: IWorkoutExercise) => {
-    this.props.navigation.navigate('AddExerciseInfo', { exercise })
+    this.props.navigation.navigate('AddExerciseInfo', {
+      exercise,
+      updateSets: this.updateSets
+    })
   }
 
   handleCreateWorkout = async () => {
@@ -107,10 +122,9 @@ class CreateWorkout extends React.Component<Props> {
         workoutTimestamp: Date.now()
       })
       await createWorkout(this.state);
-      this.props.navigation.navigate('Home', {
-        action: StackActions.POP
-      })
+      this.props.navigation.goBack();
     } catch(err) {
+      alert('An error occurred when creating workout');
       console.log('An error occurred when creating workout', err);
     }
   }

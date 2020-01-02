@@ -21,11 +21,12 @@ class AddExerciseInfo extends React.Component<Props> {
     updatingSet: false
   }
 
-
   componentDidMount() {
     const sets = this.exercise.sets;
     if (sets) {
-      const currentSet = {...sets[sets.length - 1]};
+      const currentSet = {
+        ...sets[sets.length - 1]
+      };
       currentSet.setNumber = currentSet.setNumber + 1;
       this.setState({
         sets,
@@ -33,7 +34,6 @@ class AddExerciseInfo extends React.Component<Props> {
       });
     }
   }
-
 
   handleInputChange = (key: string) => (text: string) => {
     const currentSet = { ...this.state.currentSet }
@@ -85,10 +85,8 @@ class AddExerciseInfo extends React.Component<Props> {
   }
 
   handleSubmit = () => {
-    this.props.navigation.navigate('CreateWorkout', { 
-      exercise: this.exercise,
-      sets: this.state.sets
-    });
+    this.props.navigation.state.params.updateSets(this.exercise, this.state.sets);
+    this.props.navigation.goBack();
   }
 
   render() {

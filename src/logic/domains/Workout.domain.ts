@@ -26,7 +26,7 @@ export interface IWorkout {
 }
 
 export interface IComment {
-  commentId: string;
+  commentId?: string;
   workoutId: number;
   comment: string;
   ratings: number;
@@ -45,8 +45,8 @@ export interface IExercise {
 }
 
 export interface IWorkoutExercise extends IExercise {
-  workoutExerciseId: string;
-  workoutId: number;
+  workoutExerciseId?: string;
+  workoutId?: number;
   orderNumber: number;
   sets: ISet[];
 }

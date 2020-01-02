@@ -1,6 +1,6 @@
 import React from "react";
 import { NavigationStackProp, NavigationStackOptions } from "react-navigation-stack";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Button } from "react-native";
 import { Text } from "react-native-elements";
 import { IWorkout, IComment } from "../../logic/domains/Workout.domain";
 import { FlatList, TextInput } from "react-native-gesture-handler";
@@ -35,7 +35,6 @@ class TemplateWorkout extends React.Component<Props> {
         const comments = getComments(this.workout.workoutId);
         const workoutExercises = getWorkoutExercises(this.workout.workoutId);
         const results = await Promise.all([comments, workoutExercises]);
-        console.log('results are ', results);
         this.setState({ 
           comments: results[0],
           exercises: results[1]
@@ -56,13 +55,21 @@ class TemplateWorkout extends React.Component<Props> {
     </View>
   );
 
-  
-
   handleInputChange = (replyTo: string = '') => (text: string) => {
     this.setState({
       newComment: {
         replyTo: replyTo,
         comment: text
+      }
+    })
+  }
+
+  // Create a new instance of the workout
+  handleSelectUseWorkout = () => {
+    this.props.navigation.navigate('CreateNewUserWorkout', {
+      workout: {
+        ...this.workout,
+        exercises: this.state.exercises
       }
     })
   }
@@ -113,6 +120,10 @@ class TemplateWorkout extends React.Component<Props> {
           renderItem={this.renderComment}
           keyExtractor={(item: IComment) => item.commentId}
           />
+        <Button
+          title='Use Workout'
+          onPress={this.handleSelectUseWorkout}
+        />
       </View> 
     );
   }

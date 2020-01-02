@@ -9,7 +9,12 @@ type ExerciseListProps = {
 }
 
 const numColumns = 3;
-const ExerciseList: React.FunctionComponent<ExerciseListProps> = ({ exercises, removeExercise, handleSelectItem }) => {
+// Note, requires a container with `flex: 1` to display atm...
+const ExerciseList: React.FC<ExerciseListProps> = ({ exercises, removeExercise, handleSelectItem }) => {
+
+  React.useEffect(() => {
+    console.log('exercises updated', exercises);
+  }, [exercises]);
 
   const renderExercise = ({ item }: { item: IWorkoutExercise }) => (
     <View style={styles.exercise}>
@@ -20,6 +25,7 @@ const ExerciseList: React.FunctionComponent<ExerciseListProps> = ({ exercises, r
       <Text onPress={() => handleSelectItem(item)}>{item.name}</Text>
       <Text>{item.bodyPart}</Text>
       <Text>{item.splitType}</Text>
+      <Text>Sets: {item.sets.length}</Text>
     </View>
   );
 
