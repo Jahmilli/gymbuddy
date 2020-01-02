@@ -3,8 +3,10 @@ import { NavigationStackProp } from "react-navigation-stack";
 import { View, StyleSheet, Button, Text } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { TextInput } from "react-native-gesture-handler";
-import { IWorkout, IWorkoutExercise, IExercise, ISet } from "../../logic/domains/Workout.domain";
+import { IWorkout, IWorkoutExercise, ISet } from "../../logic/domains/Workout.domain";
 import ExerciseList from "../ExerciseList/ExerciseList";
+import { IUserWorkout } from "../../logic/domains/UserWorkout.domain";
+import { createUserWorkout } from "../../logic/functions/userworkout";
 
 type Props = {
   navigation: NavigationStackProp;
@@ -19,9 +21,10 @@ class CreateNewUserWorkout extends React.Component<Props> {
   }
 
   workout: IWorkout = this.props.navigation.getParam("workout", null);
+
   componentDidMount() {
     this.setState({
-      exercises: [...this.workout.exercises]
+      exercises: this.workout.exercises
     });
   }
 
@@ -54,14 +57,30 @@ class CreateNewUserWorkout extends React.Component<Props> {
     this.hideDateTimePicker();
   };
 
-  handleCreateWorkout = () => {
+  handleCreateWorkout = async () => {
+    const userWorkout: IUserWorkout = {
+      userId: "b5452a48-85d7-4900-8c90-bc81b8e5b485", // Creating temporary userid for now
+      workoutId: this.workout.workoutId,
+      notes: this.state.notes,
+      workoutDate: this.state.date,
+      exercises: this.state.exercises
+    }
     alert('creating');
+    try {
+      const res = await createUserWorkout(userWorkout);
+      console.log('res is ', res)
+    } catch(err) {
+      alert('An error occurred when creating new workout');
+      console.log('An error occurred when creating workout', err);
+    }
+    console.log(userWorkout);
   }
 
   handleSelectExercise = (exercise: IWorkoutExercise) => {
     this.props.navigation.navigate('AddExerciseInfo', {
       exercise,
-      updateSets: this.updateSets
+      updateSets: this.updateSets,
+      isUserWorkoutExercise: true
     });
   }
 

@@ -55,4 +55,11 @@ export interface ISet {
   repetitions: number;
   restTime: number;
   setNumber: number;
+  weight?: number;
+  weightUnit?: WEIGHT_UNIT;
+}
+
+export enum WEIGHT_UNIT {
+  KILOGRAM = 'kg',
+  POUND = 'lb'
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { NavigationStackProp } from "react-navigation-stack";
-import { ISet, IWorkoutExercise } from "../../logic/domains/Workout.domain";
+import { ISet, IWorkoutExercise, WEIGHT_UNIT } from "../../logic/domains/Workout.domain";
 import { View, StyleSheet, Text, TextInput, Button, FlatList, Dimensions } from "react-native";
 
 type Props = {
@@ -8,21 +8,38 @@ type Props = {
 }
 
 const numColumns = 3;
+const initialSet = {
+  repetitions: 0,
+  restTime: 0,
+  setNumber: 0,
+  weight: 0
+}
 class AddExerciseInfo extends React.Component<Props> {
   exercise: IWorkoutExercise = this.props.navigation.getParam("exercise", null);
+  isUserWorkout: boolean = this.props.navigation.getParam("isUserWorkoutExercise", false);
+  
   state = {
     sets: [],
     // Used when editing a particular set
     currentSet: {
-      repetitions: 0,
-      restTime: 0,
-      setNumber: 0
+      ...initialSet
     },
     updatingSet: false
   }
 
+  transformSetsToUserSets = (set: ISet[]) => {
+    return set.map((set: ISet) => {
+      return {
+        ...set,
+        weight: set.weight || 0,
+        weightUnit: set.weightUnit || WEIGHT_UNIT.KILOGRAM
+      }
+    });
+  }
+
   componentDidMount() {
-    const sets = this.exercise.sets;
+    const sets = this.isUserWorkout ? this.transformSetsToUserSets(this.exercise.sets) : this.exercise.sets;
+
     if (sets) {
       const currentSet = {
         ...sets[sets.length - 1]
@@ -74,14 +91,18 @@ class AddExerciseInfo extends React.Component<Props> {
     })
   }
 
-  renderSet = ({ item }: { item: ISet}) => {
+  renderSet = ({ item }: { item: ISet }) => {
     return (
       <View style={styles.set}>
         <Text style={styles.setNumber} onPress={() => this.handlePressSet(item)}>Set Number: {item.setNumber + 1}</Text>
         <Text style={styles.setRepetitions}>Reps: {item.repetitions}</Text>
         <Text style={styles.setRestTime}>Rest Time: {item.restTime}</Text>
+        { this.isUserWorkout ?
+          <Text style={styles.setRepetitions}>weight: {item.weight} {item.weightUnit}</Text>
+          : null
+        }
       </View>
-    )
+    );
   }
 
   handleSubmit = () => {
@@ -99,7 +120,7 @@ class AddExerciseInfo extends React.Component<Props> {
           <Text>{this.exercise.bodyPart}</Text>
         </View>
         <View>
-          <Text>Set: {this.state.currentSet.setNumber}</Text>
+          <Text>Set: {this.state.currentSet.setNumber + 1}</Text>
           <Text>Repetitions</Text>
           <TextInput
             style={styles.input}
@@ -114,16 +135,29 @@ class AddExerciseInfo extends React.Component<Props> {
             keyboardType="numeric"
             value={this.state.currentSet.restTime.toString()}
           />
+
+          { this.isUserWorkout ?
+            <>
+              <Text>Weight:</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={this.handleInputChange("weight")}
+                keyboardType="numeric"
+                value={this.state.currentSet.weight.toString()}
+              />
+            </>
+            : null
+          }
           {
             this.state.updatingSet ?
             <Button
-            title="Update Set"
-            onPress={this.handleUpdateSet}
+              title="Update Set"
+              onPress={this.handleUpdateSet}
             />
             :
             <Button
-            title="Add Set"
-            onPress={this.handleAddSet}
+              title="Add Set"
+              onPress={this.handleAddSet}
             />
           }
         </View>
