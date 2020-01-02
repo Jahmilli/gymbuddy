@@ -44,7 +44,6 @@ class TemplateWorkout extends React.Component<Props> {
       }
     }
     callGetComments();
-    console.log('exerc', this.workout);
   }
 
   renderComment = ({ item }: { item: IComment }) => (

@@ -6,8 +6,10 @@ export interface IUserWorkout {
   userWorkoutId?: string;
   userId: string;
   workoutId: number;
+  name: string;
+  description: string;
   notes: string;
-  exercises: IUserWorkoutExercise[];
+  exercises: IUserWorkoutExercise[]; // Currently not returning this
   workoutDate: Date;
   startTime?: Date;
   endTime?: Date;

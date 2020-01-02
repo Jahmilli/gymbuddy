@@ -7,6 +7,7 @@ import { IWorkout, IWorkoutExercise, ISet } from "../../logic/domains/Workout.do
 import ExerciseList from "../ExerciseList/ExerciseList";
 import { IUserWorkout } from "../../logic/domains/UserWorkout.domain";
 import { createUserWorkout } from "../../logic/functions/userworkout";
+import { StackActions } from "react-navigation";
 
 type Props = {
   navigation: NavigationStackProp;
@@ -14,6 +15,8 @@ type Props = {
 
 class CreateNewUserWorkout extends React.Component<Props> {
   state = {
+    name: '',
+    description: '',
     displayDatePicker: false,
     date: new Date(),
     notes: '',
@@ -24,7 +27,9 @@ class CreateNewUserWorkout extends React.Component<Props> {
 
   componentDidMount() {
     this.setState({
-      exercises: this.workout.exercises
+      exercises: this.workout.exercises,
+      name: this.workout.name,
+      description: this.workout.description
     });
   }
 
@@ -36,7 +41,7 @@ class CreateNewUserWorkout extends React.Component<Props> {
           break;
         }
       }
-    this.setState({ exercises })
+    this.setState({ exercises });
   }
 
   displayDateTimePicker = () => {
@@ -57,23 +62,42 @@ class CreateNewUserWorkout extends React.Component<Props> {
     this.hideDateTimePicker();
   };
 
+  verifyExercisesComplete = () => {
+    for (let exercise of this.state.exercises) {
+      if (exercise.sets.length === 0) {
+        return false;
+      }
+      for (let set of exercise.sets) {
+        if (!set.repetitions || !set.restTime || !set.weight) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   handleCreateWorkout = async () => {
+    if (!this.verifyExercisesComplete()) {
+      alert('Please ensure each exercise is filled out and contains weights for each set');
+      return;
+    }
     const userWorkout: IUserWorkout = {
       userId: "b5452a48-85d7-4900-8c90-bc81b8e5b485", // Creating temporary userid for now
       workoutId: this.workout.workoutId,
+      name: this.state.name,
+      description: this.state.description,
       notes: this.state.notes,
       workoutDate: this.state.date,
       exercises: this.state.exercises
     }
     alert('creating');
     try {
-      const res = await createUserWorkout(userWorkout);
-      console.log('res is ', res)
+      await createUserWorkout(userWorkout);
+      this.props.navigation.navigate('Home', { action: StackActions.RESET });
     } catch(err) {
       alert('An error occurred when creating new workout');
       console.log('An error occurred when creating workout', err);
     }
-    console.log(userWorkout);
   }
 
   handleSelectExercise = (exercise: IWorkoutExercise) => {
@@ -83,25 +107,29 @@ class CreateNewUserWorkout extends React.Component<Props> {
       isUserWorkoutExercise: true
     });
   }
+  
+  handleInputChange = (key: string) => (text: string) => {
+    this.setState({
+      [key]: text
+    });
+  }
 
   render() {
     return (
       <View style={styles.container}>
-        <View>
-          <Button onPress={this.displayDateTimePicker} title="Add new workout date" />
-        </View>
-        <Text>Date: {this.state.date.toString()}</Text>
-        <DateTimePicker mode="datetime" isVisible={this.state.displayDatePicker} onConfirm={this.handleDatePicked} onCancel={this.hideDateTimePicker} />
+        <Text>{this.state.name}</Text>
+        <Text>{this.state.description}</Text>
         <TextInput
-          onChangeText={(text: string) => this.setState({ notes: text})}
+          onChangeText={this.handleInputChange("notes")}
           value={this.state.notes}
           placeholder="Add notes here..."
           multiline
         />
+        <Button onPress={this.displayDateTimePicker} title="Add new workout date" />
+        <Text>Date: {this.state.date.toString()}</Text>
+        <DateTimePicker mode="datetime" isVisible={this.state.displayDatePicker} onConfirm={this.handleDatePicked} onCancel={this.hideDateTimePicker} />
         <ExerciseList exercises={this.state.exercises} handleSelectItem={this.handleSelectExercise} />
-        <View>
-          <Button onPress={this.handleCreateWorkout} title="Create new workout" />
-        </View>
+        <Button onPress={this.handleCreateWorkout} title="Create new workout" />
       </View>
     );
   }

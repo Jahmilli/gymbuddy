@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
-import { getWorkouts } from '../../logic/functions/workout';
 import { FlatList } from 'react-native-gesture-handler';
+import { getWorkouts } from '../../logic/functions/workout';
 import { IWorkout } from '../../logic/domains/Workout.domain';
+import { IUserWorkout } from '../../logic/domains/UserWorkout.domain';
+import { getUserWorkouts } from '../../logic/functions/userworkout';
 
 type Props = {
   navigation: NavigationStackProp<{ userId?: string }>
@@ -14,19 +16,19 @@ class HomeScreen extends React.Component<Props> {
     title: "Home Screen", 
   }
   state = {
-    sharedWorkouts: [],
+    userTemplateWorkouts: [],
     userWorkouts: []
   }
 
   componentDidMount() {
     const callGetWorkouts = async () => {
       try {
-        const userWorkoutResults: Promise<IWorkout> = getWorkouts("b5452a48-85d7-4900-8c90-bc81b8e5b485");
-        const allWorkoutsResults: Promise<IWorkout> = getWorkouts();
-        const results = await Promise.all([userWorkoutResults, allWorkoutsResults]);
+        const userTemplateWorkouts: Promise<IWorkout> = getWorkouts("b5452a48-85d7-4900-8c90-bc81b8e5b485");
+        const userWorkouts: Promise<IUserWorkout[]> = getUserWorkouts("b5452a48-85d7-4900-8c90-bc81b8e5b485");
+        const results = await Promise.all([userTemplateWorkouts, userWorkouts]);
         this.setState({
-          userWorkouts: results[0],
-          sharedWorkouts: results[1],
+          userTemplateWorkouts: results[0],
+          userWorkouts: results[1],
         });
       } catch(err) {
         console.log('An error occurred when getting workouts', err);
@@ -48,6 +50,14 @@ class HomeScreen extends React.Component<Props> {
     </View>
   );
 
+
+  renderUserWorkout = ({ item }: { item: IUserWorkout }) => (
+    <View style={styles.workout}>
+      <Text>{item.workoutDate.toString()}</Text>
+      <Text>{item.notes}</Text>
+    </View>
+  );
+
   render() {
     return (
       <View style={styles.container}>
@@ -61,18 +71,18 @@ class HomeScreen extends React.Component<Props> {
         />
         <Text>Your Template Workouts</Text>
         <FlatList
+          data={this.state.userTemplateWorkouts}
+          style={styles.workoutsList}
+          renderItem={this.renderWorkout}
+          keyExtractor={(item: IWorkout, index: number) => item.workoutId.toString()}
+          />
+        <Text>Upcoming Workouts</Text>
+        <FlatList
           data={this.state.userWorkouts}
           style={styles.workoutsList}
-          renderItem={this.renderWorkout}
-          keyExtractor={(item: IWorkout, index: number) => `${item.name}-${index}`}
+          renderItem={this.renderUserWorkout}
+          keyExtractor={(item: IUserWorkout, index: number) => item.userWorkoutId}
           />
-        {/* <Text>Shared Template Workouts</Text>
-        <FlatList
-          data={this.state.sharedWorkouts}
-          style={styles.workoutsList}
-          renderItem={this.renderWorkout}
-          keyExtractor={(item: IWorkout, index: number) => `${item.name}-${index}`}
-          /> */}
       </View>
     );
   }
@@ -84,6 +94,7 @@ const styles = StyleSheet.create({
     padding: 25
   },
   workoutsList: {
+    flex: 1
   },
   workout: {
     borderColor: 'black',

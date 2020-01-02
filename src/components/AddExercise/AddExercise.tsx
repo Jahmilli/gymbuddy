@@ -36,7 +36,7 @@ class AddExercise extends React.Component<Props> {
   }
   
   handlePress(item: IExercise) {
-    this.props.navigation.navigate('CreateWorkout', { newExercise: item })
+    this.props.navigation.navigate('CreateWorkout', { newExercise: item });
     // this.props.navigation.navigate({routeName: "CreateWorkout", params: item})
   }
 
