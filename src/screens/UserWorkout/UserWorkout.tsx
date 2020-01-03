@@ -36,8 +36,9 @@ class CreateNewUserWorkout extends React.Component<Props> {
         }
         this.setState({
           exercises: this.isNewWorkout ? this.workout.exercises : exercises,
-          name: this.workout.name,
-          description: this.workout.description
+          name: this.workout.name || '',
+          description: this.workout.description || '',
+          notes: this.workout.notes || ''
         });
       } catch(err) {
         alert("An error occurred when getting exercises");
@@ -121,9 +122,14 @@ class CreateNewUserWorkout extends React.Component<Props> {
   handleUpdateWorkout = async () => {
     if (!this.verifyExercisesComplete()) {
       alert('Please ensure each exercise is filled out and contains weights for each set');
-      return;
     }
-    await updateUserWorkout(this.getUserWorkout());
+    try {
+      await updateUserWorkout(this.getUserWorkout());
+      alert('updated workout');
+    } catch(err) {
+      alert('An error occurred when updating workout');
+      console.log('An error occurred when updating workout', err);
+    }
   }  
 
   handleSelectExercise = (exercise: IWorkoutExercise) => {
