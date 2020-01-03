@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, Button, TextInput, Dimensions, CheckBox } from 
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 import { IWorkout, IWorkoutExercise, ISet, IExercise } from '../../logic/domains/Workout.domain';
 import { createWorkout } from '../../logic/functions/workout';
-import { StackActions } from 'react-navigation';
 import ExerciseList from '../../components/ExerciseList/ExerciseList';
 
 type Props = {
@@ -87,8 +86,8 @@ class CreateWorkout extends React.Component<Props> {
     
     // TODO: Fix this, it sucks... (Used for adding unique exercises from AddExercise)
     if (this.isNewExercise(newExercise, this.state.exercises)
-    && prevState.exercises[prevState.exercises.length-1] !== newExercise
-    && this.state.exercises[this.state.exercises.length - 1] !== newExercise) { 
+    && prevState.exercises[prevState.exercises.length - 1] !== newExercise
+    && this.state.exercises[this.state.exercises.length - 1] !== newExercise) {
       this.setState({
         exercises: [...this.state.exercises, this.convertToWorkoutExercise(newExercise)]
       });

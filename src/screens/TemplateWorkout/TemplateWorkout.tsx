@@ -5,7 +5,7 @@ import { Text } from "react-native-elements";
 import { IWorkout, IComment } from "../../logic/domains/Workout.domain";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import { getComments, createComment, getWorkoutExercises } from "../../logic/functions/workout";
-import ExerciseList from "../ExerciseList/ExerciseList";
+import ExerciseList from "../../components/ExerciseList/ExerciseList";
 
 type Props = {
   navigation: NavigationStackProp;
@@ -65,11 +65,12 @@ class TemplateWorkout extends React.Component<Props> {
 
   // Create a new instance of the workout
   handleSelectUseWorkout = () => {
-    this.props.navigation.navigate('CreateNewUserWorkout', {
+    this.props.navigation.navigate('UserWorkout', {
       workout: {
         ...this.workout,
         exercises: this.state.exercises
-      }
+      },
+      isNewWorkout: true
     })
   }
 

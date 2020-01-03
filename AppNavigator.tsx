@@ -2,13 +2,13 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createAppContainer } from "react-navigation";
 import LoginScreen from './src/screens/login/LoginScreen';
 import HomeScreen from './src/screens/home/HomeScreen';
-import CreateWorkout from "./src/screens/createWorkout/CreateWorkout";
-import AddExerciseType from "./src/components/AddExerciseType/AddExerciseType";
-import AddExercise from "./src/components/AddExercise/AddExercise";
-import AddExerciseInfo from "./src/components/AddExerciseInfo/AddExerciseInfo";
-import TemplateWorkout from "./src/components/TemplateWorkout/TemplateWorkout";
-import SharedWorkouts from "./src/components/SharedWorkouts/SharedWorkouts";
-import CreateNewUserWorkout from "./src/components/CreateNewUserWorkout/CreateNewUserWorkout";
+import CreateWorkout from "./src/screens/CreateWorkout/CreateWorkout";
+import AddExerciseType from "./src/screens/AddExerciseType/AddExerciseType";
+import AddExercise from "./src/screens/AddExercise/AddExercise";
+import AddExerciseInfo from "./src/screens/AddExerciseInfo/AddExerciseInfo";
+import TemplateWorkout from "./src/screens/TemplateWorkout/TemplateWorkout";
+import SharedWorkouts from "./src/screens/SharedWorkouts/SharedWorkouts";
+import UserWorkout from "./src/screens/UserWorkout/UserWorkout";
 
 const AppNavigation = createStackNavigator(
   {
@@ -36,8 +36,8 @@ const AppNavigation = createStackNavigator(
     SharedWorkouts: {
       screen: SharedWorkouts
     },
-    CreateNewUserWorkout: {
-      screen: CreateNewUserWorkout
+    UserWorkout: {
+      screen: UserWorkout
     }
   },
   {
@@ -53,10 +53,5 @@ const AppNavigation = createStackNavigator(
     },
   }
 )
-
-// @ts-ignore
-// HomeScreen.navigationOptions = {
-//   title: 'Home'
-// }
 
 export default createAppContainer(AppNavigation);

@@ -53,8 +53,12 @@ class HomeScreen extends React.Component<Props> {
 
   renderUserWorkout = ({ item }: { item: IUserWorkout }) => (
     <View style={styles.workout}>
-      <Text>{item.workoutDate.toString()}</Text>
+      <Text>{item.name}</Text>
+      <Text>{item.description}</Text>
       <Text>{item.notes}</Text>
+      <Text onPress={() => this.props.navigation.navigate('UserWorkout', {
+        workout: item
+      })}>{item.workoutDate.toString()}</Text>
     </View>
   );
 
