@@ -69,6 +69,6 @@ export interface ISet {
 }
 
 export enum WEIGHT_UNIT {
-  KILOGRAM = 'kg',
-  POUND = 'lb'
+  KILOGRAM = "kg",
+  POUND = "lb"
 }

@@ -1,9 +1,22 @@
 import React from "react";
+import {
+  Button,
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
-import { ISet, IWorkoutExercise, WEIGHT_UNIT } from "../../logic/domains/Workout.domain";
-import { View, StyleSheet, Text, TextInput, Button, FlatList, Dimensions, TouchableOpacity } from "react-native";
+import {
+  ISet,
+  IWorkoutExercise,
+  WEIGHT_UNIT,
+} from "../../logic/domains/Workout.domain";
 
-type Props = {
+interface Props {
   navigation: NavigationStackProp;
 }
 
@@ -12,105 +25,117 @@ const initialSet = {
   repetitions: 0,
   restTime: 0,
   setNumber: 0,
-  weight: 0
-}
+  weight: 0,
+};
 class AddExerciseInfo extends React.Component<Props> {
-  exercise: IWorkoutExercise = this.props.navigation.getParam("exercise", null);
-  isUserWorkout: boolean = this.props.navigation.getParam("isUserWorkoutExercise", false);
-  
-  state = {
+  public exercise: IWorkoutExercise = this.props.navigation.getParam("exercise", null);
+  public isUserWorkout: boolean = this.props.navigation.getParam(
+    "isUserWorkoutExercise",
+    false
+  );
+
+  public state = {
     sets: [],
     // Used when editing a particular set
     currentSet: {
-      ...initialSet
+      ...initialSet,
     },
-    updatingSet: false
-  }
+    updatingSet: false,
+  };
 
-  transformSetsToUserSets = (set: ISet[]) => {
+  public transformSetsToUserSets = (set: ISet[]) => {
     return set.map((set: ISet) => {
       return {
         ...set,
         weight: set.weight || 0,
-        weightUnit: set.weightUnit || WEIGHT_UNIT.KILOGRAM
-      }
+        weightUnit: set.weightUnit || WEIGHT_UNIT.KILOGRAM,
+      };
     });
-  }
+  };
 
-  componentDidMount() {
-    const sets = this.isUserWorkout ? this.transformSetsToUserSets(this.exercise.sets) : this.exercise.sets;
+  public componentDidMount() {
+    const sets = this.isUserWorkout
+      ? this.transformSetsToUserSets(this.exercise.sets)
+      : this.exercise.sets;
 
     if (sets) {
       const currentSet = {
-        ...sets[sets.length - 1]
+        ...sets[sets.length - 1],
       };
       currentSet.setNumber = currentSet.setNumber + 1;
       this.setState({
         sets,
-        currentSet
+        currentSet,
       });
     }
   }
 
-  handleInputChange = (key: string) => (text: string) => {
-    const currentSet = { ...this.state.currentSet }
+  public handleInputChange = (key: string) => (text: string) => {
+    const currentSet = { ...this.state.currentSet };
     currentSet[key] = parseInt(text) || 0;
     this.setState({ currentSet });
-  }
+  };
 
   // When add set is pressed
-  handleAddSet = () => {
+  public handleAddSet = () => {
     this.setState({
       sets: [...this.state.sets, this.state.currentSet],
       currentSet: {
         ...this.state.currentSet,
-        setNumber: this.state.currentSet.setNumber + 1
-      }
+        setNumber: this.state.currentSet.setNumber + 1,
+      },
     });
-  }
-  
+  };
+
   // When update button is pressed
-  handleUpdateSet = () => {
+  public handleUpdateSet = () => {
     const sets = [...this.state.sets];
-    sets[this.state.currentSet.setNumber] = { ...this.state.currentSet } // Using spread to create a new object but might not need to do this
+    sets[this.state.currentSet.setNumber] = { ...this.state.currentSet }; // Using spread to create a new object but might not need to do this
     this.setState({
       sets,
       updatingSet: false,
       currentSet: {
         ...this.state.currentSet,
-        setNumber: this.state.sets.length
-      }
+        setNumber: this.state.sets.length,
+      },
     });
-  }
+  };
 
   // When a set is pressed
-  handlePressSet = (set: ISet) => {
+  public handlePressSet = (set: ISet) => {
     this.setState({
       currentSet: set,
-      updatingSet: true
-    })
-  }
+      updatingSet: true,
+    });
+  };
 
-  renderSet = ({ item }: { item: ISet }) => {
+  public renderSet = ({ item }: { item: ISet }) => {
     return (
-      <TouchableOpacity style={styles.set} onPress={() => this.handlePressSet(item)}>
+      <TouchableOpacity
+        style={styles.set}
+        onPress={() => this.handlePressSet(item)}
+      >
         <Text style={styles.setNumber}>Set Number: {item.setNumber + 1}</Text>
         <Text style={styles.setRepetitions}>Reps: {item.repetitions}</Text>
         <Text style={styles.setRestTime}>Rest Time: {item.restTime}</Text>
-        { this.isUserWorkout ?
-          <Text style={styles.setRepetitions}>weight: {item.weight} {item.weightUnit}</Text>
-          : null
-        }
+        {this.isUserWorkout ? (
+          <Text style={styles.setRepetitions}>
+            weight: {item.weight} {item.weightUnit}
+          </Text>
+        ) : null}
       </TouchableOpacity>
     );
-  }
+  };
 
-  handleSubmit = () => {
-    this.props.navigation.state.params.updateSets(this.exercise, this.state.sets);
+  public handleSubmit = () => {
+    this.props.navigation.state.params.updateSets(
+      this.exercise,
+      this.state.sets
+    );
     this.props.navigation.goBack();
-  }
+  };
 
-  render() {
+  public render() {
     return (
       <View style={styles.container}>
         <View>
@@ -136,7 +161,7 @@ class AddExerciseInfo extends React.Component<Props> {
             value={this.state.currentSet.restTime.toString()}
           />
 
-          { this.isUserWorkout ?
+          {this.isUserWorkout ? (
             <>
               <Text>Weight:</Text>
               <TextInput
@@ -147,20 +172,15 @@ class AddExerciseInfo extends React.Component<Props> {
                 value={this.state.currentSet.weight.toString()}
               />
             </>
-            : null
-          }
-          {
-            this.state.updatingSet ?
+          ) : null}
+          {this.state.updatingSet ? (
             <Button
               title={`Update Set Number ${this.state.currentSet.setNumber + 1}`}
               onPress={this.handleUpdateSet}
             />
-            :
-            <Button
-              title="Add Set"
-              onPress={this.handleAddSet}
-            />
-          }
+          ) : (
+            <Button title="Add Set" onPress={this.handleAddSet} />
+          )}
         </View>
         <FlatList
           data={this.state.sets}
@@ -168,14 +188,10 @@ class AddExerciseInfo extends React.Component<Props> {
           renderItem={this.renderSet}
           keyExtractor={(set: ISet) => set.setNumber.toString()}
           numColumns={numColumns}
-          />
-        { this.state.sets.length > 0 ?
-          <Button
-              title="Done"
-              onPress={this.handleSubmit}
-            />
-          : null
-        }
+        />
+        {this.state.sets.length > 0 ? (
+          <Button title="Done" onPress={this.handleSubmit} />
+        ) : null}
       </View>
     );
   }
@@ -186,33 +202,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input: {
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
     marginBottom: 25,
     paddingLeft: 10,
-    paddingRight: 1
+    paddingRight: 1,
   },
   setList: {
     flex: 1,
-    marginVertical: 20
+    marginVertical: 20,
   },
   set: {
-    backgroundColor: '#00bfff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#00bfff",
+    alignItems: "center",
+    justifyContent: "center",
     flex: 1,
     margin: 1,
-    height: Dimensions.get('window').width / numColumns,
-    borderRadius: 5
+    height: Dimensions.get("window").width / numColumns,
+    borderRadius: 5,
   },
-  setNumber: {
-
-  },
-  setRepetitions: {
-
-  },
-  setRestTime: {
-
-  }
+  setNumber: {},
+  setRepetitions: {},
+  setRestTime: {},
 });
 
 export default AddExerciseInfo;

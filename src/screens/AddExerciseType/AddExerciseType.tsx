@@ -1,34 +1,39 @@
-import React, { ChangeEvent } from 'react';
-import { StyleSheet, Text, View, Button, TouchableNativeFeedback } from 'react-native';
-import { NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack';
-import { splitType, SPLIT_TYPE } from '../../utilities/Constants';
+import React, { ChangeEvent } from "react";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TouchableNativeFeedback,
+  View
+} from "react-native";
+import {
+  NavigationStackOptions,
+  NavigationStackProp
+} from "react-navigation-stack";
+import { SPLIT_TYPE, splitType } from "../../utilities/Constants";
 
-type Props = {
-  navigation: NavigationStackProp<{ userId?: string }>
+interface Props {
+  navigation: NavigationStackProp<{ userId?: string }>;
   exerciseTypes: string;
 }
-const backgroundColors = [
-  'powderblue',
-  'skyblue',
-  'steelblue'
-]
+const backgroundColors = ["powderblue", "skyblue", "steelblue"];
 class AddExerciseType extends React.Component<Props> {
-  state = {
-    username: "",
-    password: ""
-  }
 
-  static navigationOptions = ({ navigation }): NavigationStackOptions => {
+  public static navigationOptions = ({ navigation }): NavigationStackOptions => {
     return {
       title: "Add Exercise Type"
-    }
-  }
+    };
+  };
+  public state = {
+    username: "",
+    password: ""
+  };
 
-  handlePress = (splitType: SPLIT_TYPE) => {
-    this.props.navigation.navigate('AddExercise', { splitType })
-  }
+  public handlePress = (splitType: SPLIT_TYPE) => {
+    this.props.navigation.navigate("AddExercise", { splitType });
+  };
 
-  render() {
+  public render() {
     return (
       <View style={styles.container}>
         {splitType.map((type: SPLIT_TYPE, index: number) => (
@@ -36,13 +41,20 @@ class AddExerciseType extends React.Component<Props> {
             onPress={() => this.handlePress(type)}
             key={index}
             style={{ flex: 1, backgroundColor: backgroundColors[index] }}
-            background={TouchableNativeFeedback.Ripple('red')}>
-            <View style={{ flex: 1, backgroundColor: backgroundColors[index], justifyContent: 'center', alignItems: 'center' }}>
+            background={TouchableNativeFeedback.Ripple("red")}
+          >
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: backgroundColors[index],
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
               <Text style={styles.text}>{type}</Text>
             </View>
           </TouchableNativeFeedback>
         ))}
-
       </View>
     );
   }
@@ -50,7 +62,7 @@ class AddExerciseType extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
     // padding: 25
   },
   typeLockup: {
@@ -60,6 +72,5 @@ const styles = StyleSheet.create({
     fontSize: 22
   }
 });
-
 
 export default AddExerciseType;

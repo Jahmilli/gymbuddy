@@ -1,30 +1,33 @@
-import React, { ChangeEvent } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack';
-import { TextInput } from 'react-native-gesture-handler';
+import React, { ChangeEvent } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import {
+  NavigationStackOptions,
+  NavigationStackProp
+} from "react-navigation-stack";
 
-type Props = {
-  navigation: NavigationStackProp<{ userId?: string }>
+interface Props {
+  navigation: NavigationStackProp<{ userId?: string }>;
 }
 
 class LoginScreen extends React.Component<Props> {
-  state = {
-    username: "",
-    password: ""
-  }
 
-  static navigationOptions = ({ navigation }): NavigationStackOptions => {
+  public static navigationOptions = ({ navigation }): NavigationStackOptions => {
     return {
       title: "Login Screen",
       headerRight: () => (
         <Button
-        onPress={navigation.getParam('increaseCount')}
-        title="Plus 1"
-        color="#fff"
+          onPress={navigation.getParam("increaseCount")}
+          title="Plus 1"
+          color="#fff"
         />
       )
-    }
-  }
+    };
+  };
+  public state = {
+    username: "",
+    password: ""
+  };
 
   // componentDidMount() {
   //   this.props.navigation.setParams({ increaseCount: this._increaseCount })
@@ -35,47 +38,47 @@ class LoginScreen extends React.Component<Props> {
   // }
 
   // TODO: Figure out type for change event
-  handleInputChange = (key: string) => (text: string) => {
+  public handleInputChange = (key: string) => (text: string) => {
     this.setState({
       [key]: text
     });
-  }
+  };
 
-  handleSubmit = () => {
+  public handleSubmit = () => {
     // if (this.state.username.length > 0 && this.state.password.length > 0) {
-      this.props.navigation.navigate('Home')
+    this.props.navigation.navigate("Home");
     // } else {
     //   alert("Please fill in both fields");
     // }
-  }
+  };
 
-  render() {
+  public render() {
     return (
-    <View style={styles.container}>
-      <Text>Username Input</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={this.handleInputChange("username")}
-        value={this.state.username}
-        autoCompleteType="email"
-        autoFocus
-      />
-      <Text>Password Input</Text>
-      <TextInput 
-        style={styles.input}
-        onChangeText={this.handleInputChange("password")}
-        value={this.state.password}
-        autoCompleteType="password"
-      />
-      <Button
-        title="Go to Home Page"
-        onPress={this.handleSubmit} 
-        // onPress{() => navigation.navigate('Home', { userId: 2, randomKey: 'asdasd' })}
-        // onPress={() => navigation.push('Home')} 
-        // onPress={() => navigation.goBack()} 
-      />
-    </View>
-  );
+      <View style={styles.container}>
+        <Text>Username Input</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={this.handleInputChange("username")}
+          value={this.state.username}
+          autoCompleteType="email"
+          autoFocus={true}
+        />
+        <Text>Password Input</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={this.handleInputChange("password")}
+          value={this.state.password}
+          autoCompleteType="password"
+        />
+        <Button
+          title="Go to Home Page"
+          onPress={this.handleSubmit}
+          // onPress{() => navigation.navigate('Home', { userId: 2, randomKey: 'asdasd' })}
+          // onPress={() => navigation.push('Home')}
+          // onPress={() => navigation.goBack()}
+        />
+      </View>
+    );
   }
 }
 
@@ -91,10 +94,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10
   },
-  button: {
-
-  }
+  button: {}
 });
-
 
 export default LoginScreen;
