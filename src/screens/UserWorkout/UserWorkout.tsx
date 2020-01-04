@@ -92,6 +92,7 @@ class CreateNewUserWorkout extends React.Component<Props> {
     return true;
   }
 
+  // Compiles the state and workout props into a UserWorkout object
   getUserWorkout = (): IUserWorkout => {
     return {
       userWorkoutId: this.isNewWorkout ? undefined : this.workout.userWorkoutId, // UserworkoutId is generated in database for new workouts
@@ -101,7 +102,10 @@ class CreateNewUserWorkout extends React.Component<Props> {
       description: this.state.description,
       notes: this.state.notes,
       workoutDate: this.state.date,
-      exercises: this.state.exercises
+      exercises: this.state.exercises,
+      startTime: this.workout.startTime,
+      endTime: this.workout.endTime,
+      satisfaction: this.workout.satisfaction
     }
   }
 
@@ -130,7 +134,13 @@ class CreateNewUserWorkout extends React.Component<Props> {
       alert('An error occurred when updating workout');
       console.log('An error occurred when updating workout', err);
     }
-  }  
+  }
+ 
+  handleStartWorkout = async () => {
+    this.props.navigation.navigate('InProgressWorkout', {
+      workout: this.getUserWorkout()
+    }); 
+  }
 
   handleSelectExercise = (exercise: IWorkoutExercise) => {
     this.props.navigation.navigate('AddExerciseInfo', {
@@ -164,7 +174,10 @@ class CreateNewUserWorkout extends React.Component<Props> {
         { this.isNewWorkout ?
           <Button onPress={this.handleCreateWorkout} title="Create new workout" />
           :
-          <Button onPress={this.handleUpdateWorkout} title="Update workout" />
+          <>
+            <Button onPress={this.handleStartWorkout} title="Start workout" />
+            <Button onPress={this.handleUpdateWorkout} title="Update workout" />
+          </>
         }
       </View>
     );

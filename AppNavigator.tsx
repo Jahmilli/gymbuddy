@@ -9,6 +9,7 @@ import AddExerciseInfo from "./src/screens/AddExerciseInfo/AddExerciseInfo";
 import TemplateWorkout from "./src/screens/TemplateWorkout/TemplateWorkout";
 import SharedWorkouts from "./src/screens/SharedWorkouts/SharedWorkouts";
 import UserWorkout from "./src/screens/UserWorkout/UserWorkout";
+import InProgressWorkout from "./src/screens/InProgressWorkout/InProgressWorkout";
 
 const AppNavigation = createStackNavigator(
   {
@@ -38,6 +39,9 @@ const AppNavigation = createStackNavigator(
     },
     UserWorkout: {
       screen: UserWorkout
+    },
+    InProgressWorkout: {
+      screen: InProgressWorkout
     }
   },
   {

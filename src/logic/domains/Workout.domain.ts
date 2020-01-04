@@ -55,6 +55,7 @@ export interface ISet {
   repetitions: number;
   restTime: number;
   setNumber: number;
+  actualRestTime?: number;
   weight?: number;
   weightUnit?: WEIGHT_UNIT;
 }

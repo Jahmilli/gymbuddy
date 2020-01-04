@@ -13,7 +13,6 @@ const numColumns = 3;
 const ExerciseList: React.FC<ExerciseListProps> = ({ exercises, removeExercise, handleSelectItem }) => {
 
   React.useEffect(() => {
-    console.log('exercises updated', exercises);
   }, [exercises]);
 
   const renderExercise = ({ item }: { item: IWorkoutExercise }) => (
