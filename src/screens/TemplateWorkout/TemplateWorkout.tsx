@@ -2,9 +2,9 @@ import React from "react";
 import { NavigationStackProp, NavigationStackOptions } from "react-navigation-stack";
 import { View, StyleSheet, Button } from "react-native";
 import { Text } from "react-native-elements";
-import { IWorkout, IComment } from "../../logic/domains/Workout.domain";
+import { IWorkout, IComment, IRating } from "../../logic/domains/Workout.domain";
 import { FlatList, TextInput } from "react-native-gesture-handler";
-import { getComments, createComment, getWorkoutExercises } from "../../logic/functions/workout";
+import { getComments, createComment, getWorkoutExercises, createRating } from "../../logic/functions/workout";
 import ExerciseList from "../../components/ExerciseList/ExerciseList";
 
 type Props = {
@@ -39,6 +39,7 @@ class TemplateWorkout extends React.Component<Props> {
           comments: results[0],
           exercises: results[1]
         });
+        console.log('comments are ', results[0]);
       } catch(err) {
         console.log('An error occurred when getting comments', err);
       }
@@ -46,11 +47,19 @@ class TemplateWorkout extends React.Component<Props> {
     callGetComments();
   }
 
+  getRatingObj = (commentId: string | null, workoutId: number | null): IRating => {
+    return {
+      commentId: commentId,
+      workoutId: workoutId,
+      userId: "b5452a48-85d7-4900-8c90-bc81b8e5b485",
+      ratingTimestamp: new Date() 
+    }
+  }
   renderComment = ({ item }: { item: IComment }) => (
     <View style={styles.comment}>
       <Text>{item.comment}</Text>
       <Text>{item.commentTimestamp}</Text>
-      <Text>Likes: {item.ratings}</Text>
+      <Text onPress={() => createRating(this.getRatingObj(item.commentId, null))}>Likes: {item.ratings.length}</Text>
     </View>
   );
 
@@ -60,7 +69,7 @@ class TemplateWorkout extends React.Component<Props> {
         replyTo: replyTo,
         comment: text
       }
-    })
+    });
   }
 
   // Create a new instance of the workout
@@ -104,9 +113,9 @@ class TemplateWorkout extends React.Component<Props> {
         <Text style={styles.title}>{this.workout.name}</Text>
         <Text style={styles.createdBy}>{this.workout.createdBy}</Text>
         <Text style={styles.description}>Description: {this.workout.description}</Text>
-        <Text>Likes: {this.workout.ratings}</Text>
+        <Text onPress={() => createRating(this.getRatingObj(null, this.workout.workoutId))}>Likes: {this.workout.ratings.length}</Text>
         <ExerciseList exercises={this.state.exercises} handleSelectItem={() => ''} />
-        <Text style={styles.commentHeading}>Comments: </Text>
+        <Text style={styles.commentHeading}>Comments:</Text>
         <TextInput
           style={styles.input}
           onChangeText={this.handleInputChange()}

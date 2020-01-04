@@ -1,7 +1,7 @@
 import React from "react";
 import { NavigationStackProp } from "react-navigation-stack";
 import { ISet, IWorkoutExercise, WEIGHT_UNIT } from "../../logic/domains/Workout.domain";
-import { View, StyleSheet, Text, TextInput, Button, FlatList, Dimensions } from "react-native";
+import { View, StyleSheet, Text, TextInput, Button, FlatList, Dimensions, TouchableOpacity } from "react-native";
 
 type Props = {
   navigation: NavigationStackProp;
@@ -93,15 +93,15 @@ class AddExerciseInfo extends React.Component<Props> {
 
   renderSet = ({ item }: { item: ISet }) => {
     return (
-      <View style={styles.set}>
-        <Text style={styles.setNumber} onPress={() => this.handlePressSet(item)}>Set Number: {item.setNumber + 1}</Text>
+      <TouchableOpacity style={styles.set} onPress={() => this.handlePressSet(item)}>
+        <Text style={styles.setNumber}>Set Number: {item.setNumber + 1}</Text>
         <Text style={styles.setRepetitions}>Reps: {item.repetitions}</Text>
         <Text style={styles.setRestTime}>Rest Time: {item.restTime}</Text>
         { this.isUserWorkout ?
           <Text style={styles.setRepetitions}>weight: {item.weight} {item.weightUnit}</Text>
           : null
         }
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -142,6 +142,7 @@ class AddExerciseInfo extends React.Component<Props> {
               <TextInput
                 style={styles.input}
                 onChangeText={this.handleInputChange("weight")}
+                onSubmitEditing={this.handleUpdateSet}
                 keyboardType="numeric"
                 value={this.state.currentSet.weight.toString()}
               />
@@ -151,7 +152,7 @@ class AddExerciseInfo extends React.Component<Props> {
           {
             this.state.updatingSet ?
             <Button
-              title="Update Set"
+              title={`Update Set Number ${this.state.currentSet.setNumber + 1}`}
               onPress={this.handleUpdateSet}
             />
             :

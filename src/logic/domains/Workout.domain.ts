@@ -19,7 +19,7 @@ export interface IWorkout {
   name: string;
   description: string;
   exercises?: IWorkoutExercise[];
-  ratings: number;
+  ratings?: IRating[];
   shared: boolean;
   workoutTimestamp: Date;
   createdBy: string;
@@ -29,10 +29,18 @@ export interface IComment {
   commentId?: string;
   workoutId: number;
   comment: string;
-  ratings: number;
+  ratings: IRating[];
   replyTo: string;
   userId: string;
   commentTimestamp: Date;
+}
+
+export interface IRating {
+  ratingId?: string;
+  commentId: string | null;
+  workoutId: number | null;
+  userId: string;
+  ratingTimestamp: Date;
 }
 
 export interface IExercise {

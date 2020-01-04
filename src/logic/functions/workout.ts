@@ -1,5 +1,5 @@
 import { post, get } from './core/fetch';
-import { IWorkout, IComment, IWorkoutExercise } from '../domains/Workout.domain';
+import { IWorkout, IComment, IRating, IWorkoutExercise } from '../domains/Workout.domain';
 
 export const getWorkouts = async (userId?: string): Promise<IWorkout> => {
   // If user id is not specified we will get all "shared" workouts
@@ -25,4 +25,8 @@ export const getComments = async (workoutId: number): Promise<IComment[]> => {
 
 export const createComment = async (comment: IComment) => {
   return await post('http://192.168.0.21:3001/api/v1/workout/comments/create', JSON.stringify(comment));
+}
+
+export const createRating = async (rating: IRating) => {
+  return await post('http://192.168.0.21:3001/api/v1/ratings/create', JSON.stringify(rating));
 }
