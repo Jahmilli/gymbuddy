@@ -4,29 +4,30 @@ import {
   StyleSheet,
   Text,
   TouchableNativeFeedback,
-  View
+  View,
 } from "react-native";
 import {
   NavigationStackOptions,
-  NavigationStackProp
+  NavigationStackProp,
 } from "react-navigation-stack";
 import { SPLIT_TYPE, splitType } from "../../utilities/Constants";
 
-interface Props {
+type Props = {
   navigation: NavigationStackProp<{ userId?: string }>;
   exerciseTypes: string;
-}
+};
 const backgroundColors = ["powderblue", "skyblue", "steelblue"];
 class AddExerciseType extends React.Component<Props> {
-
-  public static navigationOptions = ({ navigation }): NavigationStackOptions => {
+  public static navigationOptions = ({
+    navigation,
+  }): NavigationStackOptions => {
     return {
-      title: "Add Exercise Type"
+      title: "Add Exercise Type",
     };
   };
   public state = {
     username: "",
-    password: ""
+    password: "",
   };
 
   public handlePress = (splitType: SPLIT_TYPE) => {
@@ -48,7 +49,7 @@ class AddExerciseType extends React.Component<Props> {
                 flex: 1,
                 backgroundColor: backgroundColors[index],
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <Text style={styles.text}>{type}</Text>
@@ -62,15 +63,15 @@ class AddExerciseType extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
     // padding: 25
   },
   typeLockup: {
-    flex: 1
+    flex: 1,
   },
   text: {
-    fontSize: 22
-  }
+    fontSize: 22,
+  },
 });
 
 export default AddExerciseType;

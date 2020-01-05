@@ -11,13 +11,14 @@ import {
 import { IExercise, SPLIT_TYPE } from "../../logic/domains/Workout.domain";
 import { getAllExercisesBySplitType } from "../../logic/functions/exercises";
 
-interface Props {
+type Props = {
   navigation: NavigationStackProp<{ exerciseType: SPLIT_TYPE }>;
-}
+};
 
 class AddExercise extends React.Component<Props> {
-
-  public static navigationOptions = ({ navigation }): NavigationStackOptions => {
+  public static navigationOptions = ({
+    navigation,
+  }): NavigationStackOptions => {
     return {
       title: "Add Exercise Type",
     };

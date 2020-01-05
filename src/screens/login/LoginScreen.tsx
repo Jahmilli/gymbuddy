@@ -3,16 +3,17 @@ import { Button, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import {
   NavigationStackOptions,
-  NavigationStackProp
+  NavigationStackProp,
 } from "react-navigation-stack";
 
-interface Props {
+type Props = {
   navigation: NavigationStackProp<{ userId?: string }>;
-}
+};
 
 class LoginScreen extends React.Component<Props> {
-
-  public static navigationOptions = ({ navigation }): NavigationStackOptions => {
+  public static navigationOptions = ({
+    navigation,
+  }): NavigationStackOptions => {
     return {
       title: "Login Screen",
       headerRight: () => (
@@ -21,12 +22,12 @@ class LoginScreen extends React.Component<Props> {
           title="Plus 1"
           color="#fff"
         />
-      )
+      ),
     };
   };
   public state = {
     username: "",
-    password: ""
+    password: "",
   };
 
   // componentDidMount() {
@@ -40,7 +41,7 @@ class LoginScreen extends React.Component<Props> {
   // TODO: Figure out type for change event
   public handleInputChange = (key: string) => (text: string) => {
     this.setState({
-      [key]: text
+      [key]: text,
     });
   };
 
@@ -85,16 +86,16 @@ class LoginScreen extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25
+    padding: 25,
   },
   input: {
     backgroundColor: "#eee",
     borderRadius: 15,
     marginBottom: 25,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
-  button: {}
+  button: {},
 });
 
 export default LoginScreen;

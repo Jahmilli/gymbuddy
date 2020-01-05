@@ -16,9 +16,9 @@ import {
   WEIGHT_UNIT,
 } from "../../logic/domains/Workout.domain";
 
-interface Props {
+type Props = {
   navigation: NavigationStackProp;
-}
+};
 
 const numColumns = 3;
 const initialSet = {
@@ -28,7 +28,10 @@ const initialSet = {
   weight: 0,
 };
 class AddExerciseInfo extends React.Component<Props> {
-  public exercise: IWorkoutExercise = this.props.navigation.getParam("exercise", null);
+  public exercise: IWorkoutExercise = this.props.navigation.getParam(
+    "exercise",
+    null
+  );
   public isUserWorkout: boolean = this.props.navigation.getParam(
     "isUserWorkoutExercise",
     false
@@ -43,8 +46,8 @@ class AddExerciseInfo extends React.Component<Props> {
     updatingSet: false,
   };
 
-  public transformSetsToUserSets = (set: ISet[]) => {
-    return set.map((set: ISet) => {
+  public transformSetsToUserSets = (sets: ISet[]) => {
+    return sets.map((set: ISet) => {
       return {
         ...set,
         weight: set.weight || 0,
@@ -72,7 +75,7 @@ class AddExerciseInfo extends React.Component<Props> {
 
   public handleInputChange = (key: string) => (text: string) => {
     const currentSet = { ...this.state.currentSet };
-    currentSet[key] = parseInt(text) || 0;
+    currentSet[key] = parseInt(text, 10) || 0;
     this.setState({ currentSet });
   };
 

@@ -6,43 +6,41 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 import {
   NavigationStackOptions,
-  NavigationStackProp
+  NavigationStackProp,
 } from "react-navigation-stack";
 import ExerciseList from "../../components/ExerciseList/ExerciseList";
 import {
   IExercise,
   ISet,
   IWorkout,
-  IWorkoutExercise
+  IWorkoutExercise,
 } from "../../logic/domains/Workout.domain";
 import { createWorkout } from "../../logic/functions/workout";
 
-interface Props {
+type Props = {
   navigation: NavigationStackProp<{ userId?: string }>;
-}
+};
 
 const intialWorkoutState: IWorkout = {
   name: "",
   description: "",
   exercises: [],
-  ratings: 0,
   shared: false,
   workoutTimestamp: null,
-  createdBy: ""
+  createdBy: "",
 };
 
 class CreateWorkout extends React.Component<Props> {
-
   // Configure the navigation bar
   public static navigationOptions: NavigationStackOptions = {
-    title: "Create Workout"
+    title: "Create Workout",
   };
   public state = {
-    ...intialWorkoutState
+    ...intialWorkoutState,
   } as IWorkout;
 
   // Check function for verifying all fields are added
@@ -74,7 +72,7 @@ class CreateWorkout extends React.Component<Props> {
   public componentDidMount() {
     this.setState({
       createdBy: "b5452a48-85d7-4900-8c90-bc81b8e5b485", // Creating temporary userid for now
-      workoutTimestamp: Date.now()
+      workoutTimestamp: Date.now(),
     });
   }
 
@@ -87,13 +85,16 @@ class CreateWorkout extends React.Component<Props> {
         {
           repetitions: 0,
           restTime: 0,
-          setNumber: 0
-        }
-      ]
+          setNumber: 0,
+        },
+      ],
     };
   };
 
-  public updateSets = (workoutExercise: IWorkoutExercise, exerciseSets: ISet[]) => {
+  public updateSets = (
+    workoutExercise: IWorkoutExercise,
+    exerciseSets: ISet[]
+  ) => {
     const exercises = [...this.state.exercises];
     for (const i in exercises) {
       if (exercises[i] === workoutExercise) {
@@ -119,15 +120,15 @@ class CreateWorkout extends React.Component<Props> {
       this.setState({
         exercises: [
           ...this.state.exercises,
-          this.convertToWorkoutExercise(newExercise)
-        ]
+          this.convertToWorkoutExercise(newExercise),
+        ],
       });
     }
   }
 
   public handleInputChange = (key: string) => (text: string) => {
     this.setState({
-      [key]: text
+      [key]: text,
     });
   };
 
@@ -137,21 +138,21 @@ class CreateWorkout extends React.Component<Props> {
       (item: IWorkoutExercise) => item !== exercise
     );
     this.setState({
-      exercises: newExercises
+      exercises: newExercises,
     });
   };
 
   public handleSelectExercise = (exercise: IWorkoutExercise) => {
     this.props.navigation.navigate("AddExerciseInfo", {
       exercise,
-      updateSets: this.updateSets
+      updateSets: this.updateSets,
     });
   };
 
   public handleCreateWorkout = async () => {
     try {
       this.setState({
-        workoutTimestamp: Date.now()
+        workoutTimestamp: Date.now(),
       });
       await createWorkout(this.state);
       this.props.navigation.goBack();
@@ -204,19 +205,19 @@ class CreateWorkout extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   input: {
     backgroundColor: "#eee",
     marginBottom: 25,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
   checkboxLockup: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });
 
 export default CreateWorkout;

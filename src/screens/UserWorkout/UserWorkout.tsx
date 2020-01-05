@@ -7,22 +7,22 @@ import { NavigationStackProp } from "react-navigation-stack";
 import ExerciseList from "../../components/ExerciseList/ExerciseList";
 import {
   IUserWorkout,
-  IUserWorkoutExercise
+  IUserWorkoutExercise,
 } from "../../logic/domains/UserWorkout.domain";
 import {
   ISet,
   IWorkout,
-  IWorkoutExercise
+  IWorkoutExercise,
 } from "../../logic/domains/Workout.domain";
 import {
   createUserWorkout,
   getUserWorkoutExercises,
-  updateUserWorkout
+  updateUserWorkout,
 } from "../../logic/functions/userworkout";
 
-interface Props {
+type Props = {
   navigation: NavigationStackProp;
-}
+};
 
 class CreateNewUserWorkout extends React.Component<Props> {
   public state = {
@@ -31,11 +31,17 @@ class CreateNewUserWorkout extends React.Component<Props> {
     displayDatePicker: false,
     date: new Date(),
     notes: "",
-    exercises: [] // Need this as we can update sets for exercises here
+    exercises: [], // Need this as we can update sets for exercises here
   };
 
-  public isNewWorkout: boolean = this.props.navigation.getParam("isNewWorkout", false);
-  public workout: IUserWorkout = this.props.navigation.getParam("workout", null); // Fix this, will be type IWorkout if it's a new workout
+  public isNewWorkout: boolean = this.props.navigation.getParam(
+    "isNewWorkout",
+    false
+  );
+  public workout: IUserWorkout = this.props.navigation.getParam(
+    "workout",
+    null
+  ); // Fix this, will be type IWorkout if it's a new workout
 
   public componentDidMount() {
     // Used to get exercises for existing userworkouts
@@ -49,7 +55,7 @@ class CreateNewUserWorkout extends React.Component<Props> {
           exercises: this.isNewWorkout ? this.workout.exercises : exercises,
           name: this.workout.name || "",
           description: this.workout.description || "",
-          notes: this.workout.notes || ""
+          notes: this.workout.notes || "",
         });
       } catch (err) {
         alert("An error occurred when getting exercises");
@@ -59,7 +65,10 @@ class CreateNewUserWorkout extends React.Component<Props> {
     getExercises();
   }
 
-  public updateSets = (workoutExercise: IWorkoutExercise, exerciseSets: ISet[]) => {
+  public updateSets = (
+    workoutExercise: IWorkoutExercise,
+    exerciseSets: ISet[]
+  ) => {
     const exercises = [...this.state.exercises];
     for (const i in exercises) {
       if (exercises[i] === workoutExercise) {
@@ -115,7 +124,7 @@ class CreateNewUserWorkout extends React.Component<Props> {
       exercises: this.state.exercises,
       startTime: this.workout.startTime,
       endTime: this.workout.endTime,
-      satisfaction: this.workout.satisfaction
+      satisfaction: this.workout.satisfaction,
     };
   };
 
@@ -152,7 +161,7 @@ class CreateNewUserWorkout extends React.Component<Props> {
 
   public handleStartWorkout = async () => {
     this.props.navigation.navigate("InProgressWorkout", {
-      workout: this.getUserWorkout()
+      workout: this.getUserWorkout(),
     });
   };
 
@@ -160,13 +169,13 @@ class CreateNewUserWorkout extends React.Component<Props> {
     this.props.navigation.navigate("AddExerciseInfo", {
       exercise,
       updateSets: this.updateSets,
-      isUserWorkoutExercise: true
+      isUserWorkoutExercise: true,
     });
   };
 
   public handleInputChange = (key: string) => (text: string) => {
     this.setState({
-      [key]: text
+      [key]: text,
     });
   };
 
@@ -211,8 +220,8 @@ class CreateNewUserWorkout extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });
 
 export default CreateNewUserWorkout;

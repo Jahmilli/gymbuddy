@@ -2,11 +2,11 @@ import React from "react";
 import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 import { IWorkoutExercise } from "../../logic/domains/Workout.domain";
 
-interface ExerciseListProps {
+type ExerciseListProps = {
   exercises: IWorkoutExercise[];
-  removeExercise?: () => void;
-  handleSelectItem: () => void;
-}
+  handleSelectItem: Function;
+  removeExercise?: Function;
+};
 
 const numColumns = 3;
 // Note, requires a container with `flex: 1` to display atm...
@@ -15,8 +15,6 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   removeExercise,
   handleSelectItem,
 }) => {
-  React.useEffect(() => {}, [exercises]);
-
   const renderExercise = ({ item }: { item: IWorkoutExercise }) => (
     <View style={styles.exercise}>
       {removeExercise ? (

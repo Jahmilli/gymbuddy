@@ -3,24 +3,24 @@ import { Button, StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import {
   NavigationStackOptions,
-  NavigationStackProp
+  NavigationStackProp,
 } from "react-navigation-stack";
 import { IUserWorkout } from "../../logic/domains/UserWorkout.domain";
 import { IWorkout } from "../../logic/domains/Workout.domain";
 import { getUserWorkouts } from "../../logic/functions/userworkout";
 import { getWorkouts } from "../../logic/functions/workout";
 
-interface Props {
+type Props = {
   navigation: NavigationStackProp<{ userId?: string }>;
-}
+};
 
 class HomeScreen extends React.Component<Props> {
   public static navigationOptions: NavigationStackOptions = {
-    title: "Home Screen"
+    title: "Home Screen",
   };
   public state = {
     userTemplateWorkouts: [],
-    userWorkouts: []
+    userWorkouts: [],
   };
 
   public componentDidMount() {
@@ -35,7 +35,7 @@ class HomeScreen extends React.Component<Props> {
         const results = await Promise.all([userTemplateWorkouts, userWorkouts]);
         this.setState({
           userTemplateWorkouts: results[0],
-          userWorkouts: results[1]
+          userWorkouts: results[1],
         });
       } catch (err) {
         console.log("An error occurred when getting workouts", err);
@@ -62,7 +62,7 @@ class HomeScreen extends React.Component<Props> {
       <Text
         onPress={() =>
           this.props.navigation.navigate("UserWorkout", {
-            workout: item
+            workout: item,
           })
         }
       >
@@ -111,18 +111,18 @@ class HomeScreen extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25
+    padding: 25,
   },
   workoutsList: {
-    flex: 1
+    flex: 1,
   },
   workout: {
     borderColor: "black",
     borderWidth: 1,
     fontSize: 18,
     height: 100,
-    marginTop: 4
-  }
+    marginTop: 4,
+  },
 });
 
 export default HomeScreen;

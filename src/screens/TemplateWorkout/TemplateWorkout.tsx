@@ -4,40 +4,40 @@ import { Text } from "react-native-elements";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import {
   NavigationStackOptions,
-  NavigationStackProp
+  NavigationStackProp,
 } from "react-navigation-stack";
 import ExerciseList from "../../components/ExerciseList/ExerciseList";
 import {
   IComment,
   IRating,
-  IWorkout
+  IWorkout,
 } from "../../logic/domains/Workout.domain";
 import {
   createComment,
   createRating,
   getComments,
-  getWorkoutExercises
+  getWorkoutExercises,
 } from "../../logic/functions/workout";
 
-interface Props {
+type Props = {
   navigation: NavigationStackProp;
-}
+};
 
 const initialCommentState = {
   comment: "",
-  replyTo: undefined
+  replyTo: undefined,
 };
 
 class TemplateWorkout extends React.Component<Props> {
   public static navigationOptions: NavigationStackOptions = {
-    title: "Template Workout"
+    title: "Template Workout",
   };
   public state = {
     exercises: [],
     comments: [],
     newComment: {
-      ...initialCommentState
-    }
+      ...initialCommentState,
+    },
   };
   public workout: IWorkout = this.props.navigation.getParam("workout", null);
 
@@ -49,7 +49,7 @@ class TemplateWorkout extends React.Component<Props> {
         const results = await Promise.all([comments, workoutExercises]);
         this.setState({
           comments: results[0],
-          exercises: results[1]
+          exercises: results[1],
         });
         console.log("comments are ", results[0]);
       } catch (err) {
@@ -67,7 +67,7 @@ class TemplateWorkout extends React.Component<Props> {
       commentId,
       workoutId,
       userId: "b5452a48-85d7-4900-8c90-bc81b8e5b485",
-      ratingTimestamp: new Date()
+      ratingTimestamp: new Date(),
     };
   };
   public renderComment = ({ item }: { item: IComment }) => (
@@ -86,8 +86,8 @@ class TemplateWorkout extends React.Component<Props> {
     this.setState({
       newComment: {
         replyTo,
-        comment: text
-      }
+        comment: text,
+      },
     });
   };
 
@@ -96,9 +96,9 @@ class TemplateWorkout extends React.Component<Props> {
     this.props.navigation.navigate("UserWorkout", {
       workout: {
         ...this.workout,
-        exercises: this.state.exercises
+        exercises: this.state.exercises,
       },
-      isNewWorkout: true
+      isNewWorkout: true,
     });
   };
 
@@ -109,12 +109,12 @@ class TemplateWorkout extends React.Component<Props> {
         comment: this.state.newComment.comment,
         replyTo: this.state.newComment.replyTo,
         userId: "b5452a48-85d7-4900-8c90-bc81b8e5b485", // Creating temporary userid for no
-        commentTimestamp: new Date()
+        commentTimestamp: new Date(),
       } as IComment);
       this.setState({
         newComment: {
-          ...initialCommentState
-        }
+          ...initialCommentState,
+        },
       });
       const comments = await getComments(this.workout.workoutId);
       this.setState({ comments });
@@ -141,7 +141,7 @@ class TemplateWorkout extends React.Component<Props> {
         </Text>
         <ExerciseList
           exercises={this.state.exercises}
-          handleSelectItem={() => ""}
+          handleSelectItem={() => null}
         />
         <Text style={styles.commentHeading}>Comments:</Text>
         <TextInput
@@ -165,38 +165,38 @@ class TemplateWorkout extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   title: {
     fontSize: 22,
-    textAlign: "center"
+    textAlign: "center",
   },
   createdBy: {
     fontSize: 16,
-    textAlign: "center"
+    textAlign: "center",
   },
   description: {
-    fontSize: 16
+    fontSize: 16,
   },
   commentHeading: {
-    marginTop: 15
+    marginTop: 15,
   },
   commentsList: {
     flex: 1,
-    marginTop: 5
+    marginTop: 5,
   },
   comment: {
     borderColor: "black",
     borderWidth: 1,
     fontSize: 18,
-    padding: 5
+    padding: 5,
   },
   input: {
     backgroundColor: "#eee",
     paddingLeft: 10,
     paddingRight: 1,
-    borderRadius: 15
-  }
+    borderRadius: 15,
+  },
 });
 
 export default TemplateWorkout;
