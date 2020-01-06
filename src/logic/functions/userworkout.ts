@@ -1,6 +1,6 @@
 import {
   IUserWorkout,
-  IUserWorkoutExercise
+  IUserWorkoutExercise,
 } from "../domains/UserWorkout.domain";
 import { get, post } from "./core/fetch";
 
@@ -19,9 +19,11 @@ export const updateUserWorkout = async (userWorkout: IUserWorkout) => {
 };
 
 export const getUserWorkouts = async (
-  userId: string
+  userId: string,
+  isHistoric: boolean = false
 ): Promise<IUserWorkout[]> => {
-  const queryParam = userId ? `?userId=${userId}` : "";
+  let queryParam = userId ? `?userId=${userId}` : "";
+  queryParam += isHistoric && userId ? `&isHistoric=true` : "";
   const result: any = await get(
     `http://192.168.0.21:3001/api/v1/userworkout${queryParam}`
   );

@@ -11,6 +11,7 @@ import {
   IComment,
   IRating,
   IWorkout,
+  IWorkoutExercise,
 } from "../../logic/domains/Workout.domain";
 import {
   createComment,
@@ -42,21 +43,27 @@ class TemplateWorkout extends React.Component<Props> {
   public workout: IWorkout = this.props.navigation.getParam("workout", null);
 
   public componentDidMount() {
-    const callGetComments = async () => {
-      try {
-        const comments = getComments(this.workout.workoutId);
-        const workoutExercises = getWorkoutExercises(this.workout.workoutId);
-        const results = await Promise.all([comments, workoutExercises]);
+    getComments(this.workout.workoutId)
+      .then((result: IComment[]) => {
         this.setState({
-          comments: results[0],
-          exercises: results[1],
+          comments: result,
         });
-        console.log("comments are ", results[0]);
-      } catch (err) {
+      })
+      .catch(err => {
         console.log("An error occurred when getting comments", err);
-      }
-    };
-    callGetComments();
+        alert("An error occurred when getting comments");
+      });
+
+    getWorkoutExercises(this.workout.workoutId)
+      .then((result: IWorkoutExercise[]) => {
+        this.setState({
+          exercises: result,
+        });
+      })
+      .catch(err => {
+        console.log("An error occurred when getting exercises", err);
+        alert("An error occurred when getting exercises");
+      });
   }
 
   public getRatingObj = (
@@ -70,17 +77,34 @@ class TemplateWorkout extends React.Component<Props> {
       ratingTimestamp: new Date(),
     };
   };
-  public renderComment = ({ item }: { item: IComment }) => (
-    <View style={styles.comment}>
-      <Text>{item.comment}</Text>
-      <Text>{item.commentTimestamp}</Text>
-      <Text
-        onPress={() => createRating(this.getRatingObj(item.commentId, null))}
-      >
-        Likes: {item.ratings.length}
-      </Text>
-    </View>
-  );
+
+  public checkIsLikedByUser = (ratings: IRating[]): boolean => {
+    console.log("ratings are ", ratings);
+    for (const index in ratings) {
+      console.log("ratingindex", ratings[index]);
+      if (ratings[index].userId === "b5452a48-85d7-4900-8c90-bc81b8e5b485") {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  public renderComment = ({ item }: { item: IComment }) => {
+    const isLiked = this.checkIsLikedByUser(item.ratings);
+    console.log("isLiekd?", isLiked);
+    return (
+      <View style={styles.comment}>
+        <Text>{item.comment}</Text>
+        <Text>{item.commentTimestamp}</Text>
+        <Text
+          style={isLiked ? styles.likedRating : styles.rating}
+          onPress={() => createRating(this.getRatingObj(item.commentId, null))}
+        >
+          Likes: {item.ratings.length}
+        </Text>
+      </View>
+    );
+  };
 
   public handleInputChange = (replyTo: string = "") => (text: string) => {
     this.setState({
@@ -190,6 +214,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     fontSize: 18,
     padding: 5,
+  },
+  rating: {
+    color: "black",
+  },
+  likedRating: {
+    color: "blue",
   },
   input: {
     backgroundColor: "#eee",

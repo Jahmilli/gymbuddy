@@ -85,6 +85,10 @@ class HomeScreen extends React.Component<Props> {
           title="View Shared Workouts"
           onPress={() => this.props.navigation.navigate("SharedWorkouts")}
         />
+        <Button
+          title="View Workout History"
+          onPress={() => this.props.navigation.navigate("WorkoutHistory")}
+        />
         <Text>Your Template Workouts</Text>
         <FlatList
           data={this.state.userTemplateWorkouts}
