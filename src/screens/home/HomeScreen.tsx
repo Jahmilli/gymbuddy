@@ -53,7 +53,7 @@ class HomeScreen extends React.Component<Props> {
     <View style={styles.workout}>
       <Text onPress={() => this.handleSelectWorkout(item)}>{item.name}</Text>
       <Text>{item.description}</Text>
-      <Text>{item.ratings.length}</Text>
+      <Text>Likes: {item.ratings.length}</Text>
     </View>
   );
 

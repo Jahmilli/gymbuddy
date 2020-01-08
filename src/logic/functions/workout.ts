@@ -45,9 +45,11 @@ export const createComment = async (comment: IComment) => {
   );
 };
 
-export const createRating = async (rating: IRating) => {
+export const updateRating = async (
+  rating: IRating
+): Promise<IRating | null> => {
   return post(
-    "http://192.168.0.21:3001/api/v1/ratings/create",
+    "http://192.168.0.21:3001/api/v1/ratings/update",
     JSON.stringify(rating)
-  );
+  ).then((res: any) => res.json());
 };
