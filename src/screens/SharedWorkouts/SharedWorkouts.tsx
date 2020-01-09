@@ -17,6 +17,11 @@ type Props = {
   navigation: NavigationStackProp;
 };
 
+const sortByLikes = (workouts: IWorkout[]) => {
+  return workouts.sort(
+    (a: IWorkout, b: IWorkout) => b.ratings.length - a.ratings.length
+  );
+};
 class SharedWorkouts extends React.Component<Props> {
   public static navigationOptions: NavigationStackOptions = {
     title: "Shared Workouts",
@@ -29,8 +34,11 @@ class SharedWorkouts extends React.Component<Props> {
   public componentDidMount() {
     const callGetWorkouts = async () => {
       try {
-        const workouts = await getWorkouts();
-        this.setState({ workouts });
+        const workouts: IWorkout[] = await getWorkouts();
+        const sortedWorkouts = sortByLikes(workouts);
+        this.setState({
+          workouts: sortedWorkouts,
+        });
       } catch (err) {
         alert("An error occurred when getting workouts");
         console.log("An error occurred when getting workouts", err);
@@ -47,7 +55,7 @@ class SharedWorkouts extends React.Component<Props> {
     <View style={styles.workout}>
       <Text onPress={() => this.handleSelectWorkout(item)}>{item.name}</Text>
       <Text>{item.description}</Text>
-      <Text>{item.ratings.length}</Text>
+      <Text>Likes: {item.ratings.length}</Text>
     </View>
   );
 

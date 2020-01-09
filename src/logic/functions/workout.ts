@@ -6,7 +6,7 @@ import {
 } from "../domains/Workout.domain";
 import { get, post } from "./core/fetch";
 
-export const getWorkouts = async (userId?: string): Promise<IWorkout> => {
+export const getWorkouts = async (userId?: string): Promise<IWorkout[]> => {
   // If user id is not specified we will get all "shared" workouts
   const queryParam = userId ? `?userId=${userId}` : "";
   const result: any = await get(

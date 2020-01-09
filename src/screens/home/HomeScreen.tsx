@@ -14,6 +14,15 @@ type Props = {
   navigation: NavigationStackProp<{ userId?: string }>;
 };
 
+// Sorts workouts by date starting at those closest to current date
+export const sortWorkoutsByDate = (workouts: IUserWorkout[]) => {
+  return workouts.sort((a: IUserWorkout, b: IUserWorkout) => {
+    return (
+      new Date(a.workoutDate).getTime() - new Date(b.workoutDate).getTime()
+    );
+  });
+};
+
 class HomeScreen extends React.Component<Props> {
   public static navigationOptions: NavigationStackOptions = {
     title: "Home Screen",
@@ -33,9 +42,11 @@ class HomeScreen extends React.Component<Props> {
           "b5452a48-85d7-4900-8c90-bc81b8e5b485"
         );
         const results = await Promise.all([userTemplateWorkouts, userWorkouts]);
+        // Sort User Workouts By Upcoming Dates
+        const sortedWorkoutsByDates = sortWorkoutsByDate(results[1]);
         this.setState({
           userTemplateWorkouts: results[0],
-          userWorkouts: results[1],
+          userWorkouts: sortedWorkoutsByDates,
         });
       } catch (err) {
         console.log("An error occurred when getting workouts", err);
