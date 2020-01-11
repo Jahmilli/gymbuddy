@@ -11,7 +11,6 @@ import {
   IComment,
   IRating,
   IWorkout,
-  IWorkoutExercise,
 } from "../../logic/domains/Workout.domain";
 import {
   createComment,
@@ -29,52 +28,43 @@ const initialCommentState = {
   replyTo: undefined,
 };
 
-class TemplateWorkout extends React.Component<Props> {
-  public static navigationOptions: NavigationStackOptions = {
-    title: "Template Workout",
-  };
-  public state = {
-    exercises: [],
-    comments: [],
-    newComment: {
-      ...initialCommentState,
-    },
-    isLikedWorkout: false,
-    workoutRatings: 0,
-  };
-  workout: IWorkout = this.props.navigation.getParam("workout", null);
+const initialState = {
+  exercises: [],
+  comments: [],
+  newComment: {
+    ...initialCommentState,
+  },
+  isLikedWorkout: false,
+  workoutRatings: 0,
+};
 
-  public componentDidMount() {
-    this.setState({
-      workoutRatings: this.workout.ratings.length,
-    });
-    if (this.checkIsLikedByUser(this.workout.ratings) !== -1) {
-      this.setState({ isLikedWorkout: true });
-    }
-    getComments(this.workout.workoutId)
-      .then((result: IComment[]) => {
-        this.setState({
-          comments: result,
-        });
-      })
-      .catch(err => {
-        console.log("An error occurred when getting comments", err);
-        alert("An error occurred when getting comments");
-      });
+const TemplateWorkout: React.FC<Props> = ({ navigation }) => {
+  // TODO: Separate into separate vars so can use promise chaining for this rather than async await
+  const [state, setState] = React.useState({ ...initialState });
+  const workout: IWorkout = navigation.getParam("workout", null);
 
-    getWorkoutExercises(this.workout.workoutId)
-      .then((result: IWorkoutExercise[]) => {
-        this.setState({
-          exercises: result,
+  React.useEffect(() => {
+    const callGetData = async () => {
+      try {
+        const commentsPromise = getComments(workout.workoutId);
+        const workoutsPromise = getWorkoutExercises(workout.workoutId);
+        const results = await Promise.all([commentsPromise, workoutsPromise]);
+        setState({
+          ...state,
+          comments: results[0],
+          exercises: results[1],
+          isLikedWorkout: checkIsLikedByUser(workout.ratings) !== -1,
+          workoutRatings: workout.ratings.length,
         });
-      })
-      .catch(err => {
+      } catch (err) {
         console.log("An error occurred when getting exercises", err);
         alert("An error occurred when getting exercises");
-      });
-  }
+      }
+    };
+    callGetData();
+  }, []);
 
-  public getRatingObj = (
+  const getRatingObj = (
     commentId: string | null,
     workoutId: number | null
   ): IRating => {
@@ -86,7 +76,7 @@ class TemplateWorkout extends React.Component<Props> {
     };
   };
 
-  public checkIsLikedByUser = (ratings: IRating[]): number => {
+  const checkIsLikedByUser = (ratings: IRating[]): number => {
     for (let i = 0; i < ratings.length; i++) {
       if (ratings[i].userId === "b5452a48-85d7-4900-8c90-bc81b8e5b485") {
         return i;
@@ -95,34 +85,23 @@ class TemplateWorkout extends React.Component<Props> {
     return -1;
   };
 
-  setCommentRating = async (
+  const setCommentRating = async (
     rating: IRating,
     ratingIndex: number,
     index: number
   ) => {
     try {
       const result: IRating | {} = await updateRating(rating);
-      const comments = [...this.state.comments];
+      const comments = [...state.comments];
 
       if (ratingIndex === -1 && result) {
         comments[index].ratings.push(result);
       } else {
         comments[index].ratings.splice(ratingIndex, 1);
       }
-      this.setState({ comments });
-    } catch (err) {
-      console.log("An error occurred when setting rating", err);
-      alert("An error occurred when setting rating");
-    }
-  };
-
-  setWorkoutRating = async (rating: IRating) => {
-    try {
-      const result: IRating | {} = await updateRating(rating);
-      const isLiked = Object.keys(result).length > 0; // If we received a rating response, a rating was created
-      this.setState({
-        isLikedWorkout: isLiked,
-        workoutRatings: this.state.workoutRatings + (isLiked ? 1 : -1),
+      setState({
+        ...state,
+        comments,
       });
     } catch (err) {
       console.log("An error occurred when setting rating", err);
@@ -130,14 +109,29 @@ class TemplateWorkout extends React.Component<Props> {
     }
   };
 
-  public renderComment = ({
+  const setWorkoutRating = async (rating: IRating) => {
+    try {
+      const result: IRating | {} = await updateRating(rating);
+      const isLiked = Object.keys(result).length > 0; // If we received a rating response, a rating was created
+      setState({
+        ...state,
+        isLikedWorkout: isLiked,
+        workoutRatings: state.workoutRatings + (isLiked ? 1 : -1),
+      });
+    } catch (err) {
+      console.log("An error occurred when setting rating", err);
+      alert("An error occurred when setting rating");
+    }
+  };
+
+  const renderComment = ({
     item,
     index,
   }: {
     item: IComment;
     index: number;
   }) => {
-    const ratingIndex = this.checkIsLikedByUser(item.ratings);
+    const ratingIndex = checkIsLikedByUser(item.ratings);
     return (
       <View style={styles.comment}>
         <Text>{item.comment}</Text>
@@ -145,8 +139,8 @@ class TemplateWorkout extends React.Component<Props> {
         <Text
           style={ratingIndex !== -1 ? styles.likedRating : styles.rating}
           onPress={() =>
-            this.setCommentRating(
-              this.getRatingObj(item.commentId, null),
+            setCommentRating(
+              getRatingObj(item.commentId, null),
               ratingIndex,
               index
             )
@@ -158,8 +152,9 @@ class TemplateWorkout extends React.Component<Props> {
     );
   };
 
-  public handleInputChange = (replyTo: string = "") => (text: string) => {
-    this.setState({
+  const handleInputChange = (replyTo: string = "") => (text: string) => {
+    setState({
+      ...state,
       newComment: {
         replyTo,
         comment: text,
@@ -168,80 +163,78 @@ class TemplateWorkout extends React.Component<Props> {
   };
 
   // Create a new instance of the workout
-  public handleSelectUseWorkout = () => {
-    this.props.navigation.navigate("UserWorkout", {
+  const handleSelectUseWorkout = () => {
+    navigation.navigate("UserWorkout", {
       workout: {
-        ...this.workout,
-        exercises: this.state.exercises,
+        ...workout,
+        exercises: state.exercises,
       },
       isNewWorkout: true,
     });
   };
 
-  public handleSubmitComment = async () => {
+  const handleSubmitComment = async () => {
     try {
       await createComment({
-        workoutId: this.workout.workoutId,
-        comment: this.state.newComment.comment,
-        replyTo: this.state.newComment.replyTo,
+        workoutId: workout.workoutId,
+        comment: state.newComment.comment,
+        replyTo: state.newComment.replyTo,
         userId: "b5452a48-85d7-4900-8c90-bc81b8e5b485", // Creating temporary userid for no
         commentTimestamp: new Date(),
       } as IComment);
-      this.setState({
+      setState({
+        ...state,
         newComment: {
           ...initialCommentState,
         },
       });
-      const comments = await getComments(this.workout.workoutId);
-      this.setState({ comments });
+      const comments = await getComments(workout.workoutId);
+      setState({
+        ...state,
+        comments,
+      });
     } catch (err) {
       alert("An error occurred when submitting comment");
       console.log("err is ", err);
     }
   };
 
-  public render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>{this.workout.name}</Text>
-        <Text style={styles.createdBy}>{this.workout.createdBy}</Text>
-        <Text style={styles.description}>
-          Description: {this.workout.description}
-        </Text>
-        <Text
-          style={this.state.isLikedWorkout ? styles.likedRating : styles.rating}
-          onPress={() =>
-            this.setWorkoutRating(
-              this.getRatingObj(null, this.workout.workoutId)
-            )
-          }
-        >
-          Likes: {this.state.workoutRatings}
-        </Text>
-        <ExerciseList
-          exercises={this.state.exercises}
-          handleSelectItem={() => null}
-        />
-        <Text style={styles.commentHeading}>Comments:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={this.handleInputChange()}
-          onSubmitEditing={this.handleSubmitComment}
-          placeholder="Write a comment..."
-          value={this.state.newComment.comment}
-        />
-        <FlatList
-          data={this.state.comments}
-          style={styles.commentsList}
-          renderItem={this.renderComment}
-          extraData={this.state.comments}
-          keyExtractor={(item: IComment) => item.commentId}
-        />
-        <Button title="Use Workout" onPress={this.handleSelectUseWorkout} />
-      </View>
-    );
-  }
-}
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{workout.name}</Text>
+      <Text style={styles.createdBy}>{workout.createdBy}</Text>
+      <Text style={styles.description}>Description: {workout.description}</Text>
+      <Text
+        style={state.isLikedWorkout ? styles.likedRating : styles.rating}
+        onPress={() => setWorkoutRating(getRatingObj(null, workout.workoutId))}
+      >
+        Likes: {state.workoutRatings}
+      </Text>
+      <ExerciseList exercises={state.exercises} handleSelectItem={() => null} />
+      <Text style={styles.commentHeading}>Comments:</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={handleInputChange()}
+        onSubmitEditing={handleSubmitComment}
+        placeholder="Write a comment..."
+        value={state.newComment.comment}
+      />
+      <FlatList
+        data={state.comments}
+        style={styles.commentsList}
+        renderItem={renderComment}
+        extraData={state.comments}
+        keyExtractor={(item: IComment) => item.commentId}
+      />
+      <Button title="Use Workout" onPress={handleSelectUseWorkout} />
+    </View>
+  );
+};
+
+// @ts-ignore
+TemplateWorkout.navigationOptions = {
+  title: "Template Workout",
+} as NavigationStackOptions;
 
 const styles = StyleSheet.create({
   container: {

@@ -6,12 +6,8 @@ import {
   NavigationStackOptions,
   NavigationStackProp,
 } from "react-navigation-stack";
-import { IComment, IWorkout } from "../../logic/domains/Workout.domain";
-import {
-  createComment,
-  getComments,
-  getWorkouts,
-} from "../../logic/functions/workout";
+import { IWorkout } from "../../logic/domains/Workout.domain";
+import { getWorkouts } from "../../logic/functions/workout";
 
 type Props = {
   navigation: NavigationStackProp;
@@ -22,56 +18,51 @@ const sortByLikes = (workouts: IWorkout[]) => {
     (a: IWorkout, b: IWorkout) => b.ratings.length - a.ratings.length
   );
 };
-class SharedWorkouts extends React.Component<Props> {
-  public static navigationOptions: NavigationStackOptions = {
-    title: "Shared Workouts",
-  };
 
-  public state = {
-    workouts: [],
-  };
-
-  public componentDidMount() {
+const SharedWorkouts: React.FC<Props> = ({ navigation }) => {
+  const [workouts, setWorkouts] = React.useState([]);
+  React.useEffect(() => {
     const callGetWorkouts = async () => {
       try {
         const workouts: IWorkout[] = await getWorkouts();
         const sortedWorkouts = sortByLikes(workouts);
-        this.setState({
-          workouts: sortedWorkouts,
-        });
+        setWorkouts(sortedWorkouts);
       } catch (err) {
         alert("An error occurred when getting workouts");
         console.log("An error occurred when getting workouts", err);
       }
     };
     callGetWorkouts();
-  }
+  }, []);
 
-  public handleSelectWorkout = (workout: IWorkout) => {
-    this.props.navigation.navigate("TemplateWorkout", { workout });
+  const handleSelectWorkout = (workout: IWorkout) => {
+    navigation.navigate("TemplateWorkout", { workout });
   };
 
-  public renderWorkout = ({ item }: { item: IWorkout }) => (
+  const renderWorkout = ({ item }: { item: IWorkout }) => (
     <View style={styles.workout}>
-      <Text onPress={() => this.handleSelectWorkout(item)}>{item.name}</Text>
+      <Text onPress={() => handleSelectWorkout(item)}>{item.name}</Text>
       <Text>{item.description}</Text>
       <Text>Likes: {item.ratings.length}</Text>
     </View>
   );
 
-  public render() {
-    return (
-      <View style={styles.container}>
-        <FlatList
-          data={this.state.workouts}
-          style={styles.workoutsList}
-          renderItem={this.renderWorkout}
-          keyExtractor={(item: IWorkout) => item.workoutId.toString()}
-        />
-      </View>
-    );
-  }
-}
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={workouts}
+        style={styles.workoutsList}
+        renderItem={renderWorkout}
+        keyExtractor={(item: IWorkout) => item.workoutId.toString()}
+      />
+    </View>
+  );
+};
+
+// @ts-ignore
+SharedWorkouts.navigationOptions = {
+  title: "Shared Workout",
+} as NavigationStackOptions;
 
 const styles = StyleSheet.create({
   container: {

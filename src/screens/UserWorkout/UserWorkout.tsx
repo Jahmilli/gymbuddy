@@ -20,38 +20,35 @@ type Props = {
   navigation: NavigationStackProp;
 };
 
-class UserWorkout extends React.Component<Props> {
-  public state = {
-    name: "",
-    description: "",
-    displayDatePicker: false,
-    date: new Date(),
-    notes: "",
-    exercises: [], // Need this as we can update sets for exercises here
-  };
+const initialState = {
+  name: "",
+  description: "",
+  displayDatePicker: false,
+  date: new Date(),
+  notes: "",
+  exercises: [], // Need this as we can update sets for exercises here
+};
 
-  public isNewWorkout: boolean = this.props.navigation.getParam(
-    "isNewWorkout",
-    false
-  );
-  public workout: IUserWorkout = this.props.navigation.getParam(
-    "workout",
-    null
-  ); // Fix this, will be type IWorkout if it's a new workout
+const UserWorkout: React.FC<Props> = ({ navigation }) => {
+  const [state, setState] = React.useState({ ...initialState });
 
-  public componentDidMount() {
+  const isNewWorkout: boolean = navigation.getParam("isNewWorkout", false);
+  const workout: IUserWorkout = navigation.getParam("workout", null); // Fix this, will be type IWorkout if it's a new workout
+
+  React.useEffect(() => {
     // Used to get exercises for existing userworkouts
     const getExercises = async () => {
       try {
         let exercises: IUserWorkoutExercise[] = [];
-        if (!this.isNewWorkout) {
-          exercises = await getUserWorkoutExercises(this.workout.userWorkoutId);
+        if (!isNewWorkout) {
+          exercises = await getUserWorkoutExercises(workout.userWorkoutId);
         }
-        this.setState({
-          exercises: this.isNewWorkout ? this.workout.exercises : exercises,
-          name: this.workout.name || "",
-          description: this.workout.description || "",
-          notes: this.workout.notes || "",
+        setState({
+          ...state,
+          exercises: isNewWorkout ? workout.exercises : exercises,
+          name: workout.name || "",
+          description: workout.description || "",
+          notes: workout.notes || "",
         });
       } catch (err) {
         alert("An error occurred when getting exercises");
@@ -59,42 +56,54 @@ class UserWorkout extends React.Component<Props> {
       }
     };
     getExercises();
-  }
+  }, []);
 
-  public updateSets = (
+  const updateSets = (
     workoutExercise: IWorkoutExercise,
     exerciseSets: ISet[]
   ) => {
-    const exercises = [...this.state.exercises];
+    const exercises = [...state.exercises];
     for (const i in exercises) {
       if (exercises[i] === workoutExercise) {
         exercises[i].sets = exerciseSets;
         break;
       }
     }
-    this.setState({ exercises });
+    setState({
+      ...state,
+      exercises,
+    });
   };
 
-  public displayDateTimePicker = () => {
-    this.setState({ displayDatePicker: true });
+  const displayDateTimePicker = () => {
+    setState({
+      ...state,
+      displayDatePicker: true,
+    });
   };
 
-  public hideDateTimePicker = () => {
-    this.setState({ displayDatePicker: false });
+  const hideDateTimePicker = () => {
+    setState({
+      ...state,
+      displayDatePicker: false,
+    });
   };
 
-  public handleDatePicked = (date: Date) => {
+  const handleDatePicked = (date: Date) => {
     if (date < new Date()) {
       alert("Please select a date from today onwards");
-      this.hideDateTimePicker();
+      hideDateTimePicker();
       return;
     }
-    this.setState({ date });
-    this.hideDateTimePicker();
+    setState({
+      ...state,
+      date,
+    });
+    hideDateTimePicker();
   };
 
-  public verifyExercisesComplete = () => {
-    for (const exercise of this.state.exercises) {
+  const verifyExercisesComplete = () => {
+    for (const exercise of state.exercises) {
       if (exercise.sets.length === 0) {
         return false;
       }
@@ -108,46 +117,46 @@ class UserWorkout extends React.Component<Props> {
   };
 
   // Compiles the state and workout props into a UserWorkout object
-  public getUserWorkout = (): IUserWorkout => {
+  const getUserWorkout = (): IUserWorkout => {
     return {
-      userWorkoutId: this.isNewWorkout ? undefined : this.workout.userWorkoutId, // UserworkoutId is generated in database for new workouts
+      userWorkoutId: isNewWorkout ? undefined : workout.userWorkoutId, // UserworkoutId is generated in database for new workouts
       userId: "b5452a48-85d7-4900-8c90-bc81b8e5b485", // Creating temporary userid for now
-      workoutId: this.workout.workoutId,
-      name: this.state.name,
-      description: this.state.description,
-      notes: this.state.notes,
-      workoutDate: this.state.date,
-      exercises: this.state.exercises,
-      startTime: this.workout.startTime,
-      endTime: this.workout.endTime,
-      satisfaction: this.workout.satisfaction,
+      workoutId: workout.workoutId,
+      name: state.name,
+      description: state.description,
+      notes: state.notes,
+      workoutDate: state.date,
+      exercises: state.exercises,
+      startTime: workout.startTime,
+      endTime: workout.endTime,
+      satisfaction: workout.satisfaction,
     };
   };
 
-  public handleCreateWorkout = async () => {
-    if (!this.verifyExercisesComplete()) {
+  const handleCreateWorkout = async () => {
+    if (!verifyExercisesComplete()) {
       alert(
         "Please ensure each exercise is filled out and contains weights for each set"
       );
       return;
     }
     try {
-      await createUserWorkout(this.getUserWorkout());
-      this.props.navigation.navigate("Home", { action: StackActions.RESET });
+      await createUserWorkout(getUserWorkout());
+      navigation.navigate("Home", { action: StackActions.RESET });
     } catch (err) {
       alert("An error occurred when creating new workout");
       console.log("An error occurred when creating workout", err);
     }
   };
 
-  public handleUpdateWorkout = async () => {
-    if (!this.verifyExercisesComplete()) {
+  const handleUpdateWorkout = async () => {
+    if (!verifyExercisesComplete()) {
       alert(
         "Please ensure each exercise is filled out and contains weights for each set"
       );
     }
     try {
-      await updateUserWorkout(this.getUserWorkout());
+      await updateUserWorkout(getUserWorkout());
       alert("updated workout");
     } catch (err) {
       alert("An error occurred when updating workout");
@@ -155,64 +164,60 @@ class UserWorkout extends React.Component<Props> {
     }
   };
 
-  public handleStartWorkout = async () => {
-    this.props.navigation.navigate("InProgressWorkout", {
-      workout: this.getUserWorkout(),
+  const handleStartWorkout = async () => {
+    navigation.navigate("InProgressWorkout", {
+      workout: getUserWorkout(),
     });
   };
 
-  public handleSelectExercise = (exercise: IWorkoutExercise) => {
-    this.props.navigation.navigate("AddExerciseInfo", {
+  const handleSelectExercise = (exercise: IWorkoutExercise) => {
+    navigation.navigate("AddExerciseInfo", {
       exercise,
-      updateSets: this.updateSets,
+      updateSets: updateSets,
       isUserWorkoutExercise: true,
     });
   };
 
-  public handleInputChange = (key: string) => (text: string) => {
-    this.setState({
+  const handleInputChange = (key: string) => (text: string) => {
+    setState({
+      ...state,
       [key]: text,
     });
   };
 
-  public render() {
-    return (
-      <View style={styles.container}>
-        <Text>{this.state.name}</Text>
-        <Text>{this.state.description}</Text>
-        <TextInput
-          onChangeText={this.handleInputChange("notes")}
-          value={this.state.notes}
-          placeholder="Add notes here..."
-          multiline={true}
-        />
-        <Button onPress={this.displayDateTimePicker} title="Set Workout Date" />
-        <Text>Date: {this.state.date.toString()}</Text>
-        <DateTimePicker
-          mode="datetime"
-          isVisible={this.state.displayDatePicker}
-          onConfirm={this.handleDatePicked}
-          onCancel={this.hideDateTimePicker}
-        />
-        <ExerciseList
-          exercises={this.state.exercises}
-          handleSelectItem={this.handleSelectExercise}
-        />
-        {this.isNewWorkout ? (
-          <Button
-            onPress={this.handleCreateWorkout}
-            title="Create new workout"
-          />
-        ) : (
-          <>
-            <Button onPress={this.handleStartWorkout} title="Start workout" />
-            <Button onPress={this.handleUpdateWorkout} title="Update workout" />
-          </>
-        )}
-      </View>
-    );
-  }
-}
+  return (
+    <View style={styles.container}>
+      <Text>{state.name}</Text>
+      <Text>{state.description}</Text>
+      <TextInput
+        onChangeText={handleInputChange("notes")}
+        value={state.notes}
+        placeholder="Add notes here..."
+        multiline={true}
+      />
+      <Button onPress={displayDateTimePicker} title="Set Workout Date" />
+      <Text>Date: {state.date.toString()}</Text>
+      <DateTimePicker
+        mode="datetime"
+        isVisible={state.displayDatePicker}
+        onConfirm={handleDatePicked}
+        onCancel={hideDateTimePicker}
+      />
+      <ExerciseList
+        exercises={state.exercises}
+        handleSelectItem={handleSelectExercise}
+      />
+      {isNewWorkout ? (
+        <Button onPress={handleCreateWorkout} title="Create new workout" />
+      ) : (
+        <>
+          <Button onPress={handleStartWorkout} title="Start workout" />
+          <Button onPress={handleUpdateWorkout} title="Update workout" />
+        </>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

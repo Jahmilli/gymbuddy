@@ -8,34 +8,30 @@ type Props = {
   navigation: NavigationStackProp;
 };
 
-class WorkoutHistory extends React.Component<Props> {
-  state = {
-    workouts: [] as IUserWorkout[],
-  };
+const WorkoutHistory: React.FC<Props> = ({ navigation }) => {
+  const [workouts, setWorkouts] = React.useState<IUserWorkout[]>([]);
 
-  componentDidMount() {
+  React.useEffect(() => {
     const callGetHistoricWorkouts = async () => {
       try {
         const historicWorkouts = await getUserWorkouts(
           "b5452a48-85d7-4900-8c90-bc81b8e5b485",
           true
         );
-        this.setState({
-          workouts: historicWorkouts,
-        });
+        setWorkouts(historicWorkouts);
       } catch (err) {
         alert("An error occurred when getting historic workouts");
         console.log("An error occurred when getting historic workouts", err);
       }
     };
     callGetHistoricWorkouts();
-  }
+  }, []);
 
-  public renderUserWorkout = ({ item }: { item: IUserWorkout }) => (
+  const renderUserWorkout = ({ item }: { item: IUserWorkout }) => (
     <View style={styles.workout}>
       <Text
         onPress={() =>
-          this.props.navigation.navigate("UserWorkout", {
+          navigation.navigate("UserWorkout", {
             workout: item,
           })
         }
@@ -48,20 +44,18 @@ class WorkoutHistory extends React.Component<Props> {
     </View>
   );
 
-  render() {
-    return (
-      <View style={styles.workoutsList}>
-        <Text>Workout History</Text>
-        <FlatList
-          data={this.state.workouts}
-          style={styles.workoutsList}
-          renderItem={this.renderUserWorkout}
-          keyExtractor={(item: IUserWorkout) => item.userWorkoutId}
-        />
-      </View>
-    );
-  }
-}
+  return (
+    <View style={styles.workoutsList}>
+      <Text>Workout History</Text>
+      <FlatList
+        data={workouts}
+        style={styles.workoutsList}
+        renderItem={renderUserWorkout}
+        keyExtractor={(item: IUserWorkout) => item.userWorkoutId}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

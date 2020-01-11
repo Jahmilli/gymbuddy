@@ -27,26 +27,32 @@ const initialSet = {
   setNumber: 0,
   weight: 0,
 };
-class AddExerciseInfo extends React.Component<Props> {
-  public exercise: IWorkoutExercise = this.props.navigation.getParam(
-    "exercise",
-    null
-  );
-  public isUserWorkout: boolean = this.props.navigation.getParam(
+const AddExerciseInfo: React.FC<Props> = ({ navigation }) => {
+  const exercise: IWorkoutExercise = navigation.getParam("exercise", null);
+  const isUserWorkout: boolean = navigation.getParam(
     "isUserWorkoutExercise",
     false
   );
+  const [sets, setSets] = React.useState<ISet[]>([]);
+  const [currentSet, setCurrentSet] = React.useState<ISet>(initialSet);
+  const [updatingSet, setUpdatingSet] = React.useState<boolean>(false);
 
-  public state = {
-    sets: [],
-    // Used when editing a particular set
-    currentSet: {
-      ...initialSet,
-    },
-    updatingSet: false,
-  };
+  React.useEffect(() => {
+    const sets = isUserWorkout
+      ? transformSetsToUserSets(exercise.sets)
+      : exercise.sets;
 
-  public transformSetsToUserSets = (sets: ISet[]) => {
+    if (sets) {
+      const currentSet = {
+        ...sets[sets.length - 1],
+      };
+      currentSet.setNumber = currentSet.setNumber + 1;
+      setSets(sets);
+      setCurrentSet(currentSet);
+    }
+  }, []);
+
+  const transformSetsToUserSets = (sets: ISet[]) => {
     return sets.map((set: ISet) => {
       return {
         ...set,
@@ -56,72 +62,46 @@ class AddExerciseInfo extends React.Component<Props> {
     });
   };
 
-  public componentDidMount() {
-    const sets = this.isUserWorkout
-      ? this.transformSetsToUserSets(this.exercise.sets)
-      : this.exercise.sets;
-
-    if (sets) {
-      const currentSet = {
-        ...sets[sets.length - 1],
-      };
-      currentSet.setNumber = currentSet.setNumber + 1;
-      this.setState({
-        sets,
-        currentSet,
-      });
-    }
-  }
-
-  public handleInputChange = (key: string) => (text: string) => {
-    const currentSet = { ...this.state.currentSet };
-    currentSet[key] = parseInt(text, 10) || 0;
-    this.setState({ currentSet });
+  const handleInputChange = (key: string) => (text: string) => {
+    const tempCurrentSet = { ...currentSet };
+    tempCurrentSet[key] = parseInt(text, 10) || 0;
+    setCurrentSet(tempCurrentSet);
   };
 
   // When add set is pressed
-  public handleAddSet = () => {
-    this.setState({
-      sets: [...this.state.sets, this.state.currentSet],
-      currentSet: {
-        ...this.state.currentSet,
-        setNumber: this.state.currentSet.setNumber + 1,
-      },
+  const handleAddSet = () => {
+    setSets([...sets, currentSet]);
+    setCurrentSet({
+      ...currentSet,
+      setNumber: currentSet.setNumber + 1,
     });
   };
 
   // When update button is pressed
-  public handleUpdateSet = () => {
-    const sets = [...this.state.sets];
-    sets[this.state.currentSet.setNumber] = { ...this.state.currentSet }; // Using spread to create a new object but might not need to do this
-    this.setState({
-      sets,
-      updatingSet: false,
-      currentSet: {
-        ...this.state.currentSet,
-        setNumber: this.state.sets.length,
-      },
+  const handleUpdateSet = () => {
+    const tempSets = [...sets];
+    tempSets[currentSet.setNumber] = { ...currentSet }; // Using spread to create a new object but might not need to do this
+    setSets(tempSets);
+    setUpdatingSet(false);
+    setCurrentSet({
+      ...currentSet,
+      setNumber: tempSets.length,
     });
   };
 
   // When a set is pressed
-  public handlePressSet = (set: ISet) => {
-    this.setState({
-      currentSet: set,
-      updatingSet: true,
-    });
+  const handlePressSet = (set: ISet) => {
+    setCurrentSet(set);
+    setUpdatingSet(true);
   };
 
-  public renderSet = ({ item }: { item: ISet }) => {
+  const renderSet = ({ item }: { item: ISet }) => {
     return (
-      <TouchableOpacity
-        style={styles.set}
-        onPress={() => this.handlePressSet(item)}
-      >
+      <TouchableOpacity style={styles.set} onPress={() => handlePressSet(item)}>
         <Text style={styles.setNumber}>Set Number: {item.setNumber + 1}</Text>
         <Text style={styles.setRepetitions}>Reps: {item.repetitions}</Text>
         <Text style={styles.setRestTime}>Rest Time: {item.restTime}</Text>
-        {this.isUserWorkout ? (
+        {isUserWorkout ? (
           <Text style={styles.setRepetitions}>
             weight: {item.weight} {item.weightUnit}
           </Text>
@@ -130,75 +110,68 @@ class AddExerciseInfo extends React.Component<Props> {
     );
   };
 
-  public handleSubmit = () => {
-    this.props.navigation.state.params.updateSets(
-      this.exercise,
-      this.state.sets
-    );
-    this.props.navigation.goBack();
+  const handleSubmit = () => {
+    navigation.state.params.updateSets(exercise, sets);
+    navigation.goBack();
   };
 
-  public render() {
-    return (
-      <View style={styles.container}>
-        <View>
-          <Text>{this.exercise.name}</Text>
-          <Text>{this.exercise.description}</Text>
-          <Text>{this.exercise.splitType}</Text>
-          <Text>{this.exercise.bodyPart}</Text>
-        </View>
-        <View>
-          <Text>Set: {this.state.currentSet.setNumber + 1}</Text>
-          <Text>Repetitions</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={this.handleInputChange("repetitions")}
-            keyboardType="numeric"
-            value={this.state.currentSet.repetitions.toString()}
-          />
-          <Text>Rest Time (Seconds)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={this.handleInputChange("restTime")}
-            keyboardType="numeric"
-            value={this.state.currentSet.restTime.toString()}
-          />
-
-          {this.isUserWorkout ? (
-            <>
-              <Text>Weight:</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={this.handleInputChange("weight")}
-                onSubmitEditing={this.handleUpdateSet}
-                keyboardType="numeric"
-                value={this.state.currentSet.weight.toString()}
-              />
-            </>
-          ) : null}
-          {this.state.updatingSet ? (
-            <Button
-              title={`Update Set Number ${this.state.currentSet.setNumber + 1}`}
-              onPress={this.handleUpdateSet}
-            />
-          ) : (
-            <Button title="Add Set" onPress={this.handleAddSet} />
-          )}
-        </View>
-        <FlatList
-          data={this.state.sets}
-          style={styles.setList}
-          renderItem={this.renderSet}
-          keyExtractor={(set: ISet) => set.setNumber.toString()}
-          numColumns={numColumns}
-        />
-        {this.state.sets.length > 0 ? (
-          <Button title="Done" onPress={this.handleSubmit} />
-        ) : null}
+  return (
+    <View style={styles.container}>
+      <View>
+        <Text>{exercise.name}</Text>
+        <Text>{exercise.description}</Text>
+        <Text>{exercise.splitType}</Text>
+        <Text>{exercise.bodyPart}</Text>
       </View>
-    );
-  }
-}
+      <View>
+        <Text>Set: {currentSet.setNumber + 1}</Text>
+        <Text>Repetitions</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={handleInputChange("repetitions")}
+          keyboardType="numeric"
+          value={currentSet.repetitions.toString()}
+        />
+        <Text>Rest Time (Seconds)</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={handleInputChange("restTime")}
+          keyboardType="numeric"
+          value={currentSet.restTime.toString()}
+        />
+
+        {isUserWorkout ? (
+          <>
+            <Text>Weight:</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleInputChange("weight")}
+              onSubmitEditing={handleUpdateSet}
+              keyboardType="numeric"
+              value={currentSet.weight.toString()}
+            />
+          </>
+        ) : null}
+        {updatingSet ? (
+          <Button
+            title={`Update Set Number ${currentSet.setNumber + 1}`}
+            onPress={handleUpdateSet}
+          />
+        ) : (
+          <Button title="Add Set" onPress={handleAddSet} />
+        )}
+      </View>
+      <FlatList
+        data={sets}
+        style={styles.setList}
+        renderItem={renderSet}
+        keyExtractor={(set: ISet) => set.setNumber.toString()}
+        numColumns={numColumns}
+      />
+      {sets.length > 0 ? <Button title="Done" onPress={handleSubmit} /> : null}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
