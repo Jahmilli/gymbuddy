@@ -15,62 +15,57 @@ type Props = {
   navigation: NavigationStackProp<{ exerciseType: SPLIT_TYPE }>;
 };
 
-class AddExercise extends React.Component<Props> {
-  public static navigationOptions = ({
-    navigation,
-  }): NavigationStackOptions => {
-    return {
-      title: "Add Exercise Type",
-    };
-  };
-  public state = {
-    exercises: [],
-  };
-  public splitType: SPLIT_TYPE = this.props.navigation.getParam(
+const AddExercise: React.FC<Props> = ({ navigation }) => {
+  const [exercises, setExercises] = React.useState([]);
+
+  const splitType: SPLIT_TYPE = navigation.getParam(
     "splitType",
     "No Type Provided"
   );
 
-  public componentDidMount() {
+  // Might not need this
+  React.useEffect(() => {
     const getExercises = async () => {
       try {
-        const exercises: any = await getAllExercisesBySplitType(this.splitType);
-        this.setState({ exercises });
+        const exercises: any = await getAllExercisesBySplitType(splitType);
+        setExercises(exercises);
       } catch (err) {
         console.log("An error occurred when getting all exercises", err);
       }
     };
     getExercises();
-  }
+  }, []);
 
-  public handlePress(item: IExercise) {
-    this.props.navigation.navigate("CreateWorkout", { newExercise: item });
-    // this.props.navigation.navigate({routeName: "CreateWorkout", params: item})
-  }
+  const handlePress = (item: IExercise) => {
+    navigation.navigate("CreateWorkout", { newExercise: item });
+  };
 
-  public render() {
-    return (
-      <View style={styles.container}>
-        <Text>Type is {this.splitType}</Text>
-        <FlatList<IExercise>
-          data={this.state.exercises}
-          keyExtractor={(item: IExercise) => item.name}
-          renderItem={({ item }) => (
-            <TouchableNativeFeedback
-              onPress={() => this.handlePress(item)}
-              style={styles.item}
-            >
-              <View>
-                <Text>{item.name}</Text>
-                <Text>{item.bodyPart}</Text>
-              </View>
-            </TouchableNativeFeedback>
-          )}
-        />
-      </View>
-    );
-  }
-}
+  return (
+    <View style={styles.container}>
+      <Text>Type is {splitType}</Text>
+      <FlatList<IExercise>
+        data={exercises}
+        keyExtractor={(item: IExercise) => item.name}
+        renderItem={({ item }) => (
+          <TouchableNativeFeedback
+            onPress={() => handlePress(item)}
+            style={styles.item}
+          >
+            <View>
+              <Text>{item.name}</Text>
+              <Text>{item.bodyPart}</Text>
+            </View>
+          </TouchableNativeFeedback>
+        )}
+      />
+    </View>
+  );
+};
+
+// @ts-ignore
+AddExercise.navigationOptions = {
+  title: "Add Exercise",
+} as NavigationStackOptions;
 
 const styles = StyleSheet.create({
   container: {

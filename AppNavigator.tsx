@@ -2,7 +2,6 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createAppContainer } from "react-navigation";
 import LoginScreen from "./src/screens/login/LoginScreen";
 import HomeScreen from "./src/screens/home/HomeScreen";
-import CreateWorkout from "./src/screens/CreateWorkout/CreateWorkout";
 import AddExerciseType from "./src/screens/AddExerciseType/AddExerciseType";
 import AddExercise from "./src/screens/AddExercise/AddExercise";
 import AddExerciseInfo from "./src/screens/AddExerciseInfo/AddExerciseInfo";
@@ -11,6 +10,7 @@ import SharedWorkouts from "./src/screens/SharedWorkouts/SharedWorkouts";
 import UserWorkout from "./src/screens/UserWorkout/UserWorkout";
 import InProgressWorkout from "./src/screens/InProgressWorkout/InProgressWorkout";
 import WorkoutHistory from "./src/screens/WorkoutHistory/WorkoutHistory";
+import CreateWorkout from "./src/screens/CreateWorkout/CreateWorkout";
 
 const AppNavigation = createStackNavigator(
   {
