@@ -9,11 +9,7 @@ import {
   IUserWorkout,
   IUserWorkoutExercise,
 } from "../../logic/domains/UserWorkout.domain";
-import {
-  ISet,
-  IWorkout,
-  IWorkoutExercise,
-} from "../../logic/domains/Workout.domain";
+import { ISet, IWorkoutExercise } from "../../logic/domains/Workout.domain";
 import {
   createUserWorkout,
   getUserWorkoutExercises,
@@ -24,7 +20,7 @@ type Props = {
   navigation: NavigationStackProp;
 };
 
-class CreateNewUserWorkout extends React.Component<Props> {
+class UserWorkout extends React.Component<Props> {
   public state = {
     name: "",
     description: "",
@@ -224,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateNewUserWorkout;
+export default UserWorkout;
