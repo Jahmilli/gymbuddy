@@ -35,7 +35,7 @@ class HomeScreen extends React.Component<Props> {
   public componentDidMount() {
     const callGetWorkouts = async () => {
       try {
-        const userTemplateWorkouts: Promise<IWorkout> = getWorkouts(
+        const userTemplateWorkouts: Promise<IWorkout[]> = getWorkouts(
           "b5452a48-85d7-4900-8c90-bc81b8e5b485"
         );
         const userWorkouts: Promise<IUserWorkout[]> = getUserWorkouts(

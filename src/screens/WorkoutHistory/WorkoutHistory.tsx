@@ -27,15 +27,13 @@ const WorkoutHistory: React.FC<Props> = ({ navigation }) => {
     callGetHistoricWorkouts();
   }, []);
 
+  const navigateToHistoricUserWorkout = (workout: IUserWorkout) => {
+    navigation.navigate("HistoricUserWorkout", { workout });
+  };
+
   const renderUserWorkout = ({ item }: { item: IUserWorkout }) => (
     <View style={styles.workout}>
-      <Text
-        onPress={() =>
-          navigation.navigate("UserWorkout", {
-            workout: item,
-          })
-        }
-      >
+      <Text onPress={() => navigateToHistoricUserWorkout(item)}>
         {item.name}
       </Text>
       <Text>{item.description}</Text>

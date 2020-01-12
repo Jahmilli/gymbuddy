@@ -48,6 +48,7 @@ const UserWorkout: React.FC<Props> = ({ navigation }) => {
           exercises: isNewWorkout ? workout.exercises : exercises,
           name: workout.name || "",
           description: workout.description || "",
+          // TODO: Fix this, it will clear notes every time this page loads. Should set a isLoaded var for exercises so this isnt called every time.
           notes: workout.notes || "",
         });
       } catch (err) {

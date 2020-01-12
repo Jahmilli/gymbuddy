@@ -11,6 +11,7 @@ import UserWorkout from "./src/screens/UserWorkout/UserWorkout";
 import InProgressWorkout from "./src/screens/InProgressWorkout/InProgressWorkout";
 import WorkoutHistory from "./src/screens/WorkoutHistory/WorkoutHistory";
 import CreateWorkout from "./src/screens/CreateWorkout/CreateWorkout";
+import HistoricUserWorkout from "./src/screens/HistoricUserWorkout/HistoricUserWorkout";
 
 const AppNavigation = createStackNavigator(
   {
@@ -46,6 +47,9 @@ const AppNavigation = createStackNavigator(
     },
     WorkoutHistory: {
       screen: WorkoutHistory,
+    },
+    HistoricUserWorkout: {
+      screen: HistoricUserWorkout,
     },
   },
   {
