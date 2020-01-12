@@ -42,7 +42,7 @@ const AddExerciseInfo: React.FC<Props> = ({ navigation }) => {
       ? transformSetsToUserSets(exercise.sets)
       : exercise.sets;
 
-    if (sets) {
+    if (sets.length > 0) {
       const currentSet = {
         ...sets[sets.length - 1],
       };

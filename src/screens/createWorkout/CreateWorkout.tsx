@@ -85,13 +85,7 @@ const CreateWorkout: React.FC<Props> = ({ navigation }) => {
     return {
       ...exercise,
       orderNumber: workoutState.exercises.length - 1,
-      sets: [
-        {
-          repetitions: 0,
-          restTime: 0,
-          setNumber: 0,
-        },
-      ],
+      sets: [],
     };
   };
 
@@ -151,6 +145,13 @@ const CreateWorkout: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  const setShared = () => {
+    setWorkoutState({
+      ...workoutState,
+      shared: !workoutState.shared,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text>Workout Name</Text>
@@ -166,15 +167,7 @@ const CreateWorkout: React.FC<Props> = ({ navigation }) => {
         value={workoutState.description}
       />
       <View style={styles.checkboxLockup}>
-        <CheckBox
-          value={workoutState.shared}
-          onChange={() => {
-            setWorkoutState({
-              ...workoutState,
-              shared: !workoutState.shared,
-            });
-          }}
-        />
+        <CheckBox value={workoutState.shared} onChange={setShared} />
         <Text>Shared?</Text>
       </View>
       <Button
