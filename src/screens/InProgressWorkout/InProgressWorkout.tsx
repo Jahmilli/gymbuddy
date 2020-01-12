@@ -5,6 +5,7 @@ import { StackActions } from "react-navigation";
 import { NavigationStackProp } from "react-navigation-stack";
 import { IUserWorkout } from "../../logic/domains/UserWorkout.domain";
 import { updateUserWorkout } from "../../logic/functions/userworkout";
+import { useInterval } from "../../utilities/hooks/useInterval";
 
 type Props = {
   navigation: NavigationStackProp;
@@ -26,39 +27,38 @@ const initialState = {
   currentExerciseIndex: 0,
   currentSetIndex: 0,
   startTime: new Date(), // TODO: Move this into backend??,
-  currentRestTime: 0,
   setInProgress: false,
 };
 
 // Current issue with how this is implemented is everything is managed in state, if the app closes, we lose all progress on the workout...
 // Maybe after finishing an exercise we update in the server. If there's a start date then when the componetn mounts, we set the index based on what exercises are completed?? This would require a change in the db as well.
 const InProgressWorkout: React.FC<Props> = ({ navigation }) => {
-  const [state, setState] = React.useState({ ...initialState });
-
   const workout: IUserWorkout = navigation.getParam("workout", false);
+  const [state, setState] = React.useState({
+    ...initialState,
+    exercises: workout.exercises,
+  });
+  const [currentRestTime, setCurrentRestTime] = React.useState(0);
+  const [pause, setPause] = React.useState(true);
 
-  // Will need to figure out how to unmount this
-  let interval = null;
-
-  React.useEffect(() => {
-    setState({
-      ...state,
-      exercises: workout.exercises,
-    });
-    // return () => (interval = null);
-  }, []);
+  useInterval(
+    () => {
+      setCurrentRestTime(currentRestTime + 1);
+    },
+    pause ? null : 1000
+  );
 
   const handleStartSet = () => {
     // If it's the first set we don't mind how long we rested for
-    clearInterval(interval);
-    const restTime = state.currentSetIndex === 0 ? 0 : state.currentRestTime;
+    setPause(true);
+    const restTime = state.currentSetIndex === 0 ? 0 : currentRestTime;
     handleUpdateSet("actualRestTime", restTime);
 
     setState({
       ...state,
       setInProgress: true,
-      currentRestTime: 0,
     });
+    setCurrentRestTime(0);
   };
 
   const handleCompleteSet = () => {
@@ -70,7 +70,7 @@ const InProgressWorkout: React.FC<Props> = ({ navigation }) => {
         currentSetIndex: currentSetIndex + 1,
         setInProgress: false,
       });
-      timer();
+      setPause(false);
       return;
     }
     // Change to next exercise if all sets complete
@@ -87,6 +87,7 @@ const InProgressWorkout: React.FC<Props> = ({ navigation }) => {
       ...state,
       setInProgress: false,
     });
+    setPause(true);
     completeWorkout();
   };
 
@@ -117,20 +118,10 @@ const InProgressWorkout: React.FC<Props> = ({ navigation }) => {
     });
   };
 
-  const timer = () => {
-    interval = setInterval(() => {
-      setState({
-        ...state,
-        currentRestTime: state.currentRestTime + 1,
-      });
-    }, 1000);
-  };
-
   const {
     exercises,
     currentExerciseIndex,
     currentSetIndex,
-    currentRestTime,
     setInProgress,
   } = state;
   const currentExercise = exercises[currentExerciseIndex] || defaultExercise;

@@ -7,7 +7,7 @@ import AppConfig from "../../../AppConfig";
 
 export const createUserWorkout = async (userWorkout: IUserWorkout) => {
   return post(
-    `${AppConfig.apiUrl}/api/v1/userworkout/create`,
+    `${AppConfig.apiUrl}api/v1/userworkout/create`,
     JSON.stringify(userWorkout)
   );
 };
